@@ -11,19 +11,19 @@
     <packaging>jar</packaging>
 
     <properties>
-        <!-- Projeyi Java 24 ile derlemek için -->
+        <!-- Java sürümünü belirtiyoruz -->
         <maven.compiler.release>24</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Exec plugin için ana sınıf (main class) -->
+        <!-- Uygulamayı başlatan ana sınıfın tam paket adı -->
         <exec.mainClass>com.mycompany.oopecommerceproject1.MainApp</exec.mainClass>
 
-        <!-- JavaFX SDK sürümü (IDE veya sistemde kurulu JavaFX sürümüne göre ayarlayabilirsin) -->
+        <!-- JavaFX SDK sürümü -->
         <javafx.version>17.0.2</javafx.version>
     </properties>
 
     <dependencies>
-        <!-- JavaFX Controls (JavaFX kütüphanelerini kullanmak için) -->
+        <!-- JavaFX Controls ve FXML -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -35,17 +35,17 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- MySQL JDBC Connector (Veritabanı bağlantısı için) -->
+        <!-- MySQL JDBC Connector (yeni coordinates: com.mysql:mysql-connector-j) -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <version>8.0.33</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Maven Compiler Plugin – Java sürümünü ayarlamak için -->
+            <!-- Java derleme plugin’i -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -55,18 +55,17 @@
                 </configuration>
             </plugin>
 
-            <!-- Exec Maven Plugin – mvn exec:java ile uygulamayı çalıştırmak için -->
+            <!-- mvn exec:java ile uygulama çalıştırmak için -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
                     <mainClass>${exec.mainClass}</mainClass>
-                    <commandlineArgs></commandlineArgs>
                 </configuration>
             </plugin>
 
-            <!-- JavaFX Maven Plugin – JavaFX uygulamasını paketlemek/çalıştırmak için (opsiyonel) -->
+            <!-- (Opsiyonel) JavaFX Maven plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>

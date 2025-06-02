@@ -1,4 +1,3 @@
-
 package com.mycompany.oopecommerceproject1;
 
 import javafx.application.Application;
@@ -14,7 +13,9 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/com/mycompany/oopecommerceproject1/view/Login.fxml"));
+            Parent root = FXMLLoader.load(
+                getClass().getResource("/com/mycompany/oopecommerceproject1/view/Login.fxml")
+            );
             primaryStage.setTitle("OOP E-Ticaret - Giriş");
             primaryStage.setScene(new Scene(root, 400, 300));
             primaryStage.show();
