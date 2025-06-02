@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mycompany.oopecommerceproject1.controller.ProductListController"
+      spacing="10" alignment="CENTER" prefWidth="600" prefHeight="400">
+    <TableView fx:id="productTable" prefHeight="300" prefWidth="580">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="nameColumn" text="Ürün Adı" prefWidth="200"/>
+            <TableColumn fx:id="priceColumn" text="Fiyat (₺)" prefWidth="100"/>
+            <TableColumn fx:id="stockColumn" text="Stok" prefWidth="80"/>
+        </columns>
+    </TableView>
+    <Button text="Geri Dön" fx:id="backButton" onAction="#handleBackAction"/>
+</VBox>

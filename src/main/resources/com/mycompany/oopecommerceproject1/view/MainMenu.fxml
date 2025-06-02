@@ -6,11 +6,15 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.mycompany.oopecommerceproject1.controller.MainMenuController"
-      alignment="CENTER" spacing="20">
+      alignment="CENTER" spacing="20" prefWidth="400" prefHeight="300">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
     <Label fx:id="welcomeLabel" text="Hoş geldiniz!" style="-fx-font-size: 24px;"/>
+
+    <!-- Yeni: Ürün Listesi Butonu -->
+    <Button text="Ürün Listesi" fx:id="productListButton" onAction="#handleProductListAction"/>
+
     <Button text="Çıkış Yap" onAction="#handleLogoutAction"/>
 </VBox>
