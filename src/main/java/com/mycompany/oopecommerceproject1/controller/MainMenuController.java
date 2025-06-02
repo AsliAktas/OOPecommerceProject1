@@ -16,6 +16,7 @@ public class MainMenuController {
     @FXML private Label welcomeLabel;
     @FXML private Button productListButton;
     @FXML private Button profileButton;
+    @FXML private Button myCardsButton;   // <-- ekledik
 
     @FXML
     private void handleLogoutAction(ActionEvent event) {
@@ -37,15 +38,27 @@ public class MainMenuController {
 
     @FXML
     private void handleProfileAction(ActionEvent event) {
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass()
-            .getResource("/com/mycompany/oopecommerceproject1/view/Profile.fxml"));
-        Parent root = loader.load();
-        Stage stage = (Stage) profileButton.getScene().getWindow();
-        stage.setScene(new Scene(root, 500, 400));
-    } catch (IOException e) {
-        e.printStackTrace();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/com/mycompany/oopecommerceproject1/view/Profile.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) profileButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 500, 520)); // Profil ekranı boyutu
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-}
 
+    @FXML
+    private void handleMyCardsAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/com/mycompany/oopecommerceproject1/view/MyCards.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) myCardsButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 600, 400));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

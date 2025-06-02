@@ -9,7 +9,7 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.mycompany.oopecommerceproject1.controller.ProfileController"
-      alignment="CENTER" spacing="10" prefWidth="500" prefHeight="400">
+      alignment="CENTER" spacing="10" prefWidth="500" prefHeight="520">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
@@ -18,8 +18,7 @@
 
     <GridPane hgap="10" vgap="10">
         <Label text="Kullanıcı Adı:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1"
-                   editable="false"/>
+        <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1" editable="false"/>
 
         <Label text="E-Posta:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="emailField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
@@ -33,11 +32,32 @@
         <Label text="Yeni Şifre Tekrar:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
         <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-        <Button text="Güncelle" fx:id="updateButton" GridPane.rowIndex="5" GridPane.columnIndex="1"
+        <Button text="Profil Güncelle" fx:id="updateButton" GridPane.rowIndex="5" GridPane.columnIndex="1"
                 onAction="#handleUpdateAction"/>
     </GridPane>
 
     <Label fx:id="messageLabel" text="" style="-fx-text-fill: red;"/>
 
-    <Button text="Geri Dön" fx:id="backButton" onAction="#handleBackAction"/>
+    <Label text="Kredi Kartı Bilgileri" style="-fx-font-size: 18px; -fx-font-weight: bold; margin-top:20px;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="Kart Numarası:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="cardNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Son Kul. Ay:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="expiryMonthField" promptText="MM" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="60"/>
+
+        <Label text="Son Kul. Yıl:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="expiryYearField" promptText="YYYY" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="80"/>
+
+        <Label text="CVV:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <PasswordField fx:id="cvvField" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="60"/>
+
+        <Button text="Kartı Kaydet" fx:id="saveCardButton" GridPane.rowIndex="4" GridPane.columnIndex="1"
+                onAction="#handleCardSaveAction"/>
+    </GridPane>
+
+    <Label fx:id="cardMessageLabel" text="" style="-fx-text-fill: green;"/>
+
+    <Button text="Geri Dön" fx:id="backButton" onAction="#handleBackAction" style="-fx-margin-top:20px;"/>
 </VBox>

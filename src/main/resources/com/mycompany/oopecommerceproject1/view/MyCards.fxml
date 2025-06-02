@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mycompany.oopecommerceproject1.controller.MyCardsController"
+      spacing="10" alignment="CENTER" prefWidth="600" prefHeight="400" style="-fx-padding: 20;">
+    <TableView fx:id="cardsTable" prefWidth="580" prefHeight="300">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="cardNumberColumn" text="Kart Numarası" prefWidth="200"/>
+            <TableColumn fx:id="monthColumn" text="Son Kul. Ay" prefWidth="80"/>
+            <TableColumn fx:id="yearColumn" text="Son Kul. Yıl" prefWidth="80"/>
+            <TableColumn fx:id="cvvColumn" text="CVV" prefWidth="80"/>
+        </columns>
+    </TableView>
+
+    <Button text="Geri Dön" fx:id="backButton" onAction="#handleBackAction"/>
+</VBox>
