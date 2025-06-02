@@ -15,6 +15,7 @@ public class MainMenuController {
 
     @FXML private Label welcomeLabel;
     @FXML private Button productListButton;
+    @FXML private Button profileButton;
 
     @FXML
     private void handleLogoutAction(ActionEvent event) {
@@ -33,4 +34,18 @@ public class MainMenuController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void handleProfileAction(ActionEvent event) {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass()
+            .getResource("/com/mycompany/oopecommerceproject1/view/Profile.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) profileButton.getScene().getWindow();
+        stage.setScene(new Scene(root, 500, 400));
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
 }

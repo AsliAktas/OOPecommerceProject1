@@ -1,6 +1,7 @@
 package com.mycompany.oopecommerceproject1.controller;
 
 import com.mycompany.oopecommerceproject1.util.DBConnection;
+import com.mycompany.oopecommerceproject1.util.Session;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -30,21 +31,16 @@ public class LoginController {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
 
-        System.out.println(">>> Girilen username: [" + username + "]");
-        System.out.println(">>> Girilen password: [" + password + "]");
-
         if (username.isEmpty() || password.isEmpty()) {
             messageLabel.setText("Kullanıcı adı ve şifre boş bırakılamaz.");
             return;
         }
 
         boolean valid = authenticateUser(username, password);
-        System.out.println(">>> authenticateUser() sonucu: " + valid);
-
         if (valid) {
+            Session.setCurrentUsername(username);
             messageLabel.setStyle("-fx-text-fill: green;");
             messageLabel.setText("Giriş başarılı!");
-
             try {
                 FXMLLoader loader = new FXMLLoader(getClass()
                     .getResource("/com/mycompany/oopecommerceproject1/view/MainMenu.fxml"));
@@ -56,7 +52,6 @@ public class LoginController {
                 messageLabel.setStyle("-fx-text-fill: red;");
                 messageLabel.setText("Ana menü yüklenirken hata oluştu.");
             }
-
         } else {
             messageLabel.setStyle("-fx-text-fill: red;");
             messageLabel.setText("Kullanıcı adı veya şifre hatalı.");
@@ -65,23 +60,12 @@ public class LoginController {
 
     private boolean authenticateUser(String username, String password) {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
-
-        System.out.println("    SQL sorgusu: " + sql);
-        System.out.println("    Parametre1 (username): [" + username + "]");
-        System.out.println("    Parametre2 (password): [" + password + "]");
-
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setString(1, username);
             stmt.setString(2, password);
-
-            System.out.println("    PreparedStatement nesnesi: " + stmt);
-
             try (ResultSet rs = stmt.executeQuery()) {
-                boolean exists = rs.next();
-                System.out.println("    ResultSet.next() çağrısı: " + exists);
-                return exists;
+                return rs.next();
             }
         } catch (SQLException e) {
             e.printStackTrace();

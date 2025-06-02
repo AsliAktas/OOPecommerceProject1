@@ -13,8 +13,7 @@
 
     <Label fx:id="welcomeLabel" text="Hoş geldiniz!" style="-fx-font-size: 24px;"/>
 
-    <!-- Yeni: Ürün Listesi Butonu -->
     <Button text="Ürün Listesi" fx:id="productListButton" onAction="#handleProductListAction"/>
-
+    <Button text="Profil" fx:id="profileButton" onAction="#handleProfileAction"/>
     <Button text="Çıkış Yap" onAction="#handleLogoutAction"/>
 </VBox>
