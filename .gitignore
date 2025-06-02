@@ -1,0 +1,35 @@
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+*.log
+
+# Eclipse
+.settings/
+*.classpath
+*.project
+*.metadata/
+
+# Maven (eğer kullanıyorsan)
+target/
+
+# VS Code
+.vscode/
+
+# Java derleme çıktısı ve geçici dosyalar
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# OS’ten gelen geçici dosyalar (Windows, macOS, Linux)
+.DS_Store
+Thumbs.db
