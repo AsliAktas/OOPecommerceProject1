@@ -16,6 +16,7 @@
     <Button text="Ürün Listesi" fx:id="productListButton" onAction="#handleProductListAction"/>
 
     <Button text="Profil" fx:id="profileButton" onAction="#handleProfileAction"/>
+<Button text="Sipariş Oluştur" fx:id="createOrderButton" onAction="#handleCreateOrderAction"/>
 
     <!-- Yeni: Kartlarım Butonu -->
     <Button text="Kartlarım" fx:id="myCardsButton" onAction="#handleMyCardsAction"/>

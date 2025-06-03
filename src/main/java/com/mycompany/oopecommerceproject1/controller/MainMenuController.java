@@ -16,7 +16,8 @@ public class MainMenuController {
     @FXML private Label welcomeLabel;
     @FXML private Button productListButton;
     @FXML private Button profileButton;
-    @FXML private Button myCardsButton;   // <-- ekledik
+    @FXML private Button myCardsButton;
+    @FXML private Button createOrderButton;   // <-- Yeni eklendi
 
     @FXML
     private void handleLogoutAction(ActionEvent event) {
@@ -57,6 +58,19 @@ public class MainMenuController {
             Parent root = loader.load();
             Stage stage = (Stage) myCardsButton.getScene().getWindow();
             stage.setScene(new Scene(root, 600, 400));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleCreateOrderAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/com/mycompany/oopecommerceproject1/view/Order.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) createOrderButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 600, 450));
         } catch (IOException e) {
             e.printStackTrace();
         }
