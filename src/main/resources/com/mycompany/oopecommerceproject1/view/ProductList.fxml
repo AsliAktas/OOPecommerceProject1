@@ -4,18 +4,32 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.mycompany.oopecommerceproject1.controller.ProductListController"
-      spacing="10" alignment="CENTER" prefWidth="600" prefHeight="400">
-    <TableView fx:id="productTable" prefHeight="300" prefWidth="580">
+      spacing="10" alignment="CENTER" prefWidth="600" prefHeight="450">
+    <TableView fx:id="productTable" prefHeight="350" prefWidth="580">
         <columns>
             <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
-            <TableColumn fx:id="nameColumn" text="Ürün Adı" prefWidth="200"/>
-            <TableColumn fx:id="priceColumn" text="Fiyat (₺)" prefWidth="100"/>
-            <TableColumn fx:id="stockColumn" text="Stok" prefWidth="80"/>
+            <TableColumn fx:id="nameColumn" text="Ürün Adı" prefWidth="160"/>
+            <TableColumn fx:id="priceColumn" text="Fiyat (₺)" prefWidth="90"/>
+            <TableColumn fx:id="stockColumn" text="Stok" prefWidth="60"/>
+            <!-- Mevcut “Sepete Ekle” sütunu -->
+            <TableColumn fx:id="addColumn" text="Sepete Ekle" prefWidth="100"/>
+            <!-- Yeni eklenen sütun: “Sepetten Kaldır” -->
+            <TableColumn fx:id="removeColumn" text="Sepetten Kaldır" prefWidth="120"/>
         </columns>
     </TableView>
-    <Button text="Geri Dön" fx:id="backButton" onAction="#handleBackAction"/>
+
+    <!-- Altta bir satırda = “Geri Dön” + “Sepetimi Gör” butonları -->
+    <HBox spacing="10">
+        <Button text="Geri Dön"
+                fx:id="backButton"
+                onAction="#handleBackAction"/>
+        <Button text="Sepetimi Gör"
+                fx:id="viewCartButton"
+                onAction="#handleViewCartAction"/>
+    </HBox>
 </VBox>

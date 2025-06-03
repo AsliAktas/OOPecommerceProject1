@@ -3,65 +3,44 @@ package com.mycompany.oopecommerceproject1.dao;
 import com.mycompany.oopecommerceproject1.model.CreditCard;
 import com.mycompany.oopecommerceproject1.util.DBConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Kredi kartı işlemlerini (ekleme, güncelleme, var mı kontrol etme, listeleme) yapan DAO sınıfı.
+ */
 public class CreditCardDAO {
 
-    /**
-     * userId'ye ait tek bir kredi kartını döner. Kart yoksa null döner.
-     */
-    public static CreditCard getCardByUserId(int userId) {
-        String sql = "SELECT * FROM credit_cards WHERE user_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    private final Connection conn;
 
-            stmt.setInt(1, userId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return new CreditCard(
-                        rs.getInt("id"),
-                        rs.getInt("user_id"),
-                        rs.getString("card_number"),
-                        rs.getInt("expiry_month"),
-                        rs.getInt("expiry_year"),
-                        rs.getString("cvv")
-                    );
-                }
-            }
+    public CreditCardDAO() {
+        Connection tempConn;
+        try {
+            tempConn = DBConnection.getConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Veritabanı bağlantısı oluşturulamadı.", e);
         }
-        return null;
+        conn = tempConn;
     }
 
     /**
-     * userId'ye ait tüm kredi kartlarını liste olarak döner. Yoksa boş liste döner.
+     * Kullanıcının bütün kartlarını döner.
      */
-    public static List<CreditCard> getAllCardsByUserId(int userId) {
-        List<CreditCard> cards = new ArrayList<>();
+    public List<CreditCard> getAllCardsByUserId(int userId) {
         String sql = "SELECT * FROM credit_cards WHERE user_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, userId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    CreditCard card = new CreditCard(
-                        rs.getInt("id"),
-                        rs.getInt("user_id"),
-                        rs.getString("card_number"),
-                        rs.getInt("expiry_month"),
-                        rs.getInt("expiry_year"),
-                        rs.getString("cvv")
-                    );
-                    cards.add(card);
-                }
+        List<CreditCard> cards = new ArrayList<>();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                cards.add(new CreditCard(
+                    rs.getInt("user_id"),
+                    rs.getString("card_number"),
+                    rs.getInt("expiry_month"),
+                    rs.getInt("expiry_year"),
+                    rs.getString("cvv")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,28 +49,18 @@ public class CreditCardDAO {
     }
 
     /**
-     * Yeni kredi kartı ekler. Eğer userId'ye ait bir kart zaten varsa false döner.
+     * Yeni bir kredi kartı kaydeder.
      */
-    public static boolean insertCard(CreditCard card) {
-        // Eğer zaten bir kart varsa ekleme yapma
-        if (getCardByUserId(card.getUserId()) != null) {
-            return false;
-        }
-
-        String insertSql = "INSERT INTO credit_cards (user_id, card_number, expiry_month, expiry_year, cvv) " +
-                           "VALUES (?, ?, ?, ?, ?)";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(insertSql)) {
-
-            stmt.setInt(1, card.getUserId());
-            stmt.setString(2, card.getCardNumber());
-            stmt.setInt(3, card.getExpiryMonth());
-            stmt.setInt(4, card.getExpiryYear());
-            stmt.setString(5, card.getCvv());
-
-            int affected = stmt.executeUpdate();
-            return affected > 0;
+    public boolean addCard(CreditCard card) {
+        String sql = "INSERT INTO credit_cards(user_id, card_number, expiry_month, expiry_year, cvv) " +
+                     "VALUES(?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, card.getUserId());
+            pstmt.setString(2, card.getCardNumber());
+            pstmt.setInt(3, card.getExpiryMonth());
+            pstmt.setInt(4, card.getExpiryYear());
+            pstmt.setString(5, card.getCvv());
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -99,31 +68,30 @@ public class CreditCardDAO {
     }
 
     /**
-     * userId'ye ait mevcut kartı günceller. Yoksa false döner.
+     * Mevcut kredi kartını günceller (user_id’ye göre; eğer birden fazla varsa en sonuncuyu günceller).
      */
-    public static boolean updateCard(CreditCard card) {
-        // Eğer kart yoksa güncelleme yapma
-        if (getCardByUserId(card.getUserId()) == null) {
-            return false;
-        }
+    public boolean updateCard(CreditCard card) {
+        // Burada kullanıcıya ait EN SON eklenen kartı güncellemek için önce en son id'yi çekelim:
+        String findLastSql = "SELECT id FROM credit_cards WHERE user_id = ? ORDER BY id DESC LIMIT 1";
+        try (PreparedStatement findStmt = conn.prepareStatement(findLastSql)) {
+            findStmt.setInt(1, card.getUserId());
+            ResultSet rs = findStmt.executeQuery();
+            if (rs.next()) {
+                int lastCardId = rs.getInt("id");
 
-        String updateSql = "UPDATE credit_cards SET card_number = ?, expiry_month = ?, expiry_year = ?, cvv = ? " +
-                           "WHERE user_id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(updateSql)) {
-
-            stmt.setString(1, card.getCardNumber());
-            stmt.setInt(2, card.getExpiryMonth());
-            stmt.setInt(3, card.getExpiryYear());
-            stmt.setString(4, card.getCvv());
-            stmt.setInt(5, card.getUserId());
-
-            int affected = stmt.executeUpdate();
-            return affected > 0;
+                String updateSql = "UPDATE credit_cards SET card_number = ?, expiry_month = ?, expiry_year = ?, cvv = ? WHERE id = ?";
+                try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                    updateStmt.setString(1, card.getCardNumber());
+                    updateStmt.setInt(2, card.getExpiryMonth());
+                    updateStmt.setInt(3, card.getExpiryYear());
+                    updateStmt.setString(4, card.getCvv());
+                    updateStmt.setInt(5, lastCardId);
+                    return updateStmt.executeUpdate() > 0;
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 }

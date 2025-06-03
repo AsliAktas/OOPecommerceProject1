@@ -1,5 +1,3 @@
-// src/main/java/com/mycompany/oopecommerceproject1/controller/MyCardsController.java
-
 package com.mycompany.oopecommerceproject1.controller;
 
 import com.mycompany.oopecommerceproject1.dao.CreditCardDAO;
@@ -12,55 +10,50 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Kullanıcının sahip olduğu tüm kartları listeler.
+ */
 public class MyCardsController {
 
-    @FXML private TableView<CreditCard> cardsTable;
-    @FXML private TableColumn<CreditCard, Integer> idColumn;
-    @FXML private TableColumn<CreditCard, String> cardNumberColumn;
-    @FXML private TableColumn<CreditCard, Integer> monthColumn;
-    @FXML private TableColumn<CreditCard, Integer> yearColumn;
-    @FXML private TableColumn<CreditCard, String> cvvColumn;
-    @FXML private Button backButton;
+    @FXML private ListView<CreditCard> cardsListView;
+    @FXML private Label messageLabel;
 
     @FXML
     public void initialize() {
-        // 1) Sütunları model alanlarıyla eşle
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        cardNumberColumn.setCellValueFactory(new PropertyValueFactory<>("cardNumber"));
-        monthColumn.setCellValueFactory(new PropertyValueFactory<>("expiryMonth"));
-        yearColumn.setCellValueFactory(new PropertyValueFactory<>("expiryYear"));
-        cvvColumn.setCellValueFactory(new PropertyValueFactory<>("cvv"));
+        int currentUserId = Session.getCurrentUserId();
+        if (currentUserId <= 0) {
+            messageLabel.setText("Önce giriş yapmalısınız.");
+            return;
+        }
 
-        // 2) Veritabanından o anki kullanıcıya ait tüm kartları çek
-        int userId = Session.getCurrentUserId();
-        List<CreditCard> list = CreditCardDAO.getAllCardsByUserId(userId);
+        CreditCardDAO cardDao = new CreditCardDAO();
+        List<CreditCard> kartlar = cardDao.getAllCardsByUserId(currentUserId);
 
-        // 3) ObservableList’e dönüştür ve tabloya ata
-        ObservableList<CreditCard> data = FXCollections.observableArrayList(list);
-        cardsTable.setItems(data);
+        if (kartlar.isEmpty()) {
+            messageLabel.setText("Henüz kayıtlı kartınız yok.");
+        } else {
+            ObservableList<CreditCard> obs = FXCollections.observableArrayList(kartlar);
+            cardsListView.setItems(obs);
+        }
     }
 
     @FXML
     private void handleBackAction(ActionEvent event) {
         try {
-            // Dilerseniz Profil ekranına dönebilirsiniz. Burada ana menüye dönme örneği var:
-            FXMLLoader loader = new FXMLLoader(getClass()
-                .getResource("/com/mycompany/oopecommerceproject1/view/MainMenu.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) backButton.getScene().getWindow();
+            Parent root = FXMLLoader.load(
+                getClass().getResource("/com/mycompany/oopecommerceproject1/view/MainMenu.fxml")
+            );
+            Stage stage = (Stage) cardsListView.getScene().getWindow();
             stage.setScene(new Scene(root, 600, 400));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
-

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mycompany.oopecommerceproject1.controller.CartController"
+            prefWidth="600.0" prefHeight="400.0">
+    <children>
+        <TableView fx:id="cartTable"
+                   layoutX="20" layoutY="20"
+                   prefWidth="560" prefHeight="300">
+            <columns>
+                <TableColumn fx:id="prodNameCol" text="Product"   prefWidth="180"/>
+                <TableColumn fx:id="qtyCol"      text="Qty"       prefWidth="80"/>
+                <!-- Aşağıdaki satırda "Subtotal" ile prefWidth arasında boşluk eklendi -->
+                <TableColumn fx:id="subtotCol"   text="Subtotal"  prefWidth="200"/>
+                <TableColumn fx:id="removeCol"   text="Kaldır"     prefWidth="80"/>
+            </columns>
+        </TableView>
+
+        <Button fx:id="closeButton"
+                layoutX="20" layoutY="340"
+                text="Close"
+                onAction="#handleCloseAction"/>
+    </children>
+</AnchorPane>
