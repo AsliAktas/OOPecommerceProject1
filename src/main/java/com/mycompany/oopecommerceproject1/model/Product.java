@@ -15,7 +15,8 @@ public class Product {
         this.stock = stock;
     }
 
-    // Getter ve Setter metodları
+    // ───────── Getters & Setters ─────────
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -31,4 +32,3 @@ public class Product {
     public int getStock() { return stock; }
     public void setStock(int stock) { this.stock = stock; }
 }
-

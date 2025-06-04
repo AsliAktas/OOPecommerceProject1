@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mycompany.oopecommerceproject1.controller.OrderHistoryController"
+      spacing="10" alignment="CENTER" prefWidth="600" prefHeight="450">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Sipariş Geçmişi" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <TableView fx:id="ordersTable" prefHeight="350" prefWidth="580">
+        <columns>
+            <TableColumn fx:id="orderIdColumn" text="Sipariş ID" prefWidth="80"/>
+            <TableColumn fx:id="dateColumn"    text="Tarih"      prefWidth="200"/>
+            <TableColumn fx:id="amountColumn"  text="Toplam (₺)" prefWidth="120"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <Button text="Geri Dön"
+                fx:id="backButton"
+                onAction="#handleBackAction"/>
+    </HBox>
+</VBox>

@@ -9,6 +9,10 @@ import java.util.List;
 
 public class ProductDAO {
 
+    /**
+     * Verilen kullanıcıya ait tüm ürünleri getirir.
+     * @return products listesi
+     */
     public static List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
         String sql = "SELECT id, name, description, price, stock FROM products";
@@ -35,6 +39,11 @@ public class ProductDAO {
         return products;
     }
 
+    /**
+     * Belirtilen ID'ye sahip ürünü döner.
+     * @param productId ürün ID'si
+     * @return Product veya null
+     */
     public static Product getProductById(int productId) {
         String sql = "SELECT id, name, description, price, stock FROM products WHERE id = ?";
 
@@ -61,6 +70,11 @@ public class ProductDAO {
         return null;
     }
 
+    /**
+     * Yeni bir ürün ekler. Başarılıysa true döner ve product.id'i güncellenir.
+     * @param product eklenecek Product nesnesi
+     * @return ekleme başarılıysa true, aksi halde false
+     */
     public static boolean insertProduct(Product product) {
         String sql = "INSERT INTO products (name, description, price, stock) VALUES (?, ?, ?, ?)";
 
@@ -87,6 +101,11 @@ public class ProductDAO {
         }
     }
 
+    /**
+     * Varolan bir ürünü günceller.
+     * @param product güncellenecek Product nesnesi (id dolu olmalı)
+     * @return güncelleme başarılıysa true, aksi halde false
+     */
     public static boolean updateProduct(Product product) {
         String sql = "UPDATE products SET name = ?, description = ?, price = ?, stock = ? WHERE id = ?";
 
@@ -106,6 +125,11 @@ public class ProductDAO {
         }
     }
 
+    /**
+     * Belirtilen ID'ye sahip ürünü siler.
+     * @param productId silinecek ürün ID'si
+     * @return silme başarılıysa true, aksi halde false
+     */
     public static boolean deleteProductById(int productId) {
         String sql = "DELETE FROM products WHERE id = ?";
 
