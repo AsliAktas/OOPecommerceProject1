@@ -2,7 +2,8 @@ package com.mycompany.oopecommerceproject1.dao;
 
 import com.mycompany.oopecommerceproject1.model.Favorite;
 import com.mycompany.oopecommerceproject1.util.DBConnection;
-
+import com.mycompany.oopecommerceproject1.model.Product;
+import com.mycompany.oopecommerceproject1.dao.ProductDAO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,20 +76,20 @@ public class FavoriteDAO {
      * Verilen kullanıcıya ait tüm favori ürünleri döner.
      * @return Liste boşsa[] kullanıcının favorisi yok demektir.
      */
-    public static List<Favorite> getAllFavoritesByUser(int userId) {
-        List<Favorite> list = new ArrayList<>();
-        String sql = "SELECT id, user_id, product_id FROM favorites WHERE user_id = ?";
+    public static List<Product> getAllFavoritesByUser(int userId) {
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT product_id FROM favorites WHERE user_id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(new Favorite(
-                        rs.getInt("id"),
-                        rs.getInt("user_id"),
-                        rs.getInt("product_id")
-                    ));
+                    int pid = rs.getInt("product_id");
+                    Product p = ProductDAO.getProductById(pid);
+                    if (p != null) {
+                        list.add(p);
+                    }
                 }
             }
         } catch (SQLException e) {

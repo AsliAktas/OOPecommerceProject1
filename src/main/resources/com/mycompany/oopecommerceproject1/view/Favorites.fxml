@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mycompany.oopecommerceproject1.controller.FavoritesController"
+      spacing="10" alignment="CENTER" prefWidth="600" prefHeight="450">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <TableView fx:id="favoritesTable" prefHeight="350" prefWidth="580">
+        <columns>
+            <TableColumn fx:id="favIdColumn"    text="Ürün ID"   prefWidth="80"/>
+            <TableColumn fx:id="favNameColumn"  text="Ürün Adı"  prefWidth="200"/>
+            <TableColumn fx:id="favPriceColumn" text="Fiyat (₺)" prefWidth="120"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <Button text="Favoriden Kaldır"
+                fx:id="removeFavButton"
+                onAction="#handleRemoveFavoriteAction"/>
+        <Button text="Geri Dön"
+                fx:id="backButton"
+                onAction="#handleBackAction"/>
+    </HBox>
+</VBox>
