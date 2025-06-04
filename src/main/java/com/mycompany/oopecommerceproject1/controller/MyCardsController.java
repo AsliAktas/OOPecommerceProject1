@@ -26,7 +26,7 @@ import java.util.List;
 public class MyCardsController {
 
     @FXML private ListView<CreditCard> cardsListView;
-    @FXML private Label messageLabel;
+    @FXML private Label messageLabel;  // ← This line should be kept and defined in FXML
 
     @FXML
     public void initialize() {
@@ -47,6 +47,8 @@ public class MyCardsController {
             // Convert the list to ObservableList and set it on the ListView
             ObservableList<CreditCard> obs = FXCollections.observableArrayList(cards);
             cardsListView.setItems(obs);
+            // If there are cards, clear the message
+            messageLabel.setText("");
         }
     }
 

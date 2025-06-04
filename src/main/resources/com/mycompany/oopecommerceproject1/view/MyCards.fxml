@@ -9,18 +9,29 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.mycompany.oopecommerceproject1.controller.MyCardsController"
             prefWidth="600" prefHeight="400">
-    <!-- Top: title label -->
+
+    <!-- Top: Title and message label (messageLabel) -->
     <top>
-        <Label text="My Saved Credit Cards" style="-fx-font-size: 18px; -fx-padding: 10;"/>
+        <VBox spacing="5" style="-fx-padding: 10;">
+            <!-- Screen title -->
+            <Label text="My Saved Credit Cards" style="-fx-font-size: 18px;"/>
+            <!-- The messageLabel in the controller is bound here -->
+            <Label fx:id="messageLabel"
+                   text=""
+                   style="-fx-font-size: 12px; -fx-text-fill: red;"/>
+        </VBox>
     </top>
+
     <!-- Center: ListView showing saved cards -->
     <center>
         <ListView fx:id="cardsListView" prefWidth="580" prefHeight="300"/>
     </center>
+
     <!-- Bottom: Back button -->
     <bottom>
         <VBox alignment="CENTER" spacing="10" style="-fx-padding: 10;">
             <Button text="Back" onAction="#handleBackAction"/>
         </VBox>
     </bottom>
+
 </BorderPane>
