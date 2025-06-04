@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * “Favorilerim” ekranının controller’ı.
- * Oturum açan kullanıcının favori ürünlerini listeleyip yönetir.
+ * Controller for the “My Favorites” screen.
+ * - Lists the current user’s favorite products
+ * - Allows removing a selected product from favorites
+ * - Handles “Back” button to return to the main menu
  */
 public class FavoritesController {
 
@@ -32,59 +34,70 @@ public class FavoritesController {
     @FXML private Button removeFavButton;
     @FXML private Button backButton;
 
-    // Oturum açan kullanıcının ID’si
+    // Current logged-in user’s ID
     private final int currentUserId = Session.getCurrentUserId();
 
     @FXML
     public void initialize() {
-        // (A) Sütunları tablo model alanlarıyla eşle
+        // (A) Map table columns to Product fields
         favIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         favNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         favPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        // (B) Favorileri yükle (bu metod içinde tablo yüksekliği de ayarlanacak)
+        // (B) Load favorites into the table (this method also adjusts table height)
         loadFavorites();
     }
 
+    /**
+     * Fetches all favorite products for the current user and populates the TableView.
+     * Also adjusts table height based on number of rows.
+     */
     private void loadFavorites() {
-        // 1) DAO’dan favori ürün listesini al
+        // 1) Get list of favorite products from DAO
         List<Product> favProducts = FavoriteDAO.getAllFavoritesByUser(currentUserId);
 
-        // 2) Debug: gerçekten gelen sayıyı ve ID’leri konsola yazdır
-        System.out.println(">> DAO’dan dönen favori sayısı: " + favProducts.size());
+        // 2) Debug: print count and IDs to console
+        System.out.println(">> Number of favorites returned by DAO: " + favProducts.size());
         for (Product p : favProducts) {
-            System.out.println("   - Favori Ürün ID = " + p.getId() + ", Adı = " + p.getName());
+            System.out.println("   - Favorite Product ID = " + p.getId() + ", Name = " + p.getName());
         }
 
-        // 3) TableView’in satır yüksekliğini sabitle (örneğin 28 px)
+        // 3) Fix cell height (e.g., 28 px)
         favoritesTable.setFixedCellSize(28);
 
-        // 4) Tablo yükseklik ayarı: "satır sayısı × 28 + 32 ek"
+        // 4) Set table height: (row count × 28) + 32 padding
         double newHeight = favProducts.size() * 28 + 32;
         favoritesTable.setPrefHeight(newHeight);
 
-        // 5) Son olarak ObservableList’e dönüştür ve tabloya ata
+        // 5) Convert to ObservableList and set items
         ObservableList<Product> obs = FXCollections.observableArrayList(favProducts);
         favoritesTable.setItems(obs);
     }
 
+    /**
+     * Removes the selected product from favorites and reloads the table.
+     */
     @FXML
     private void handleRemoveFavoriteAction(ActionEvent event) {
         Product selected = favoritesTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             FavoriteDAO.removeFavorite(currentUserId, selected.getId());
-            // Silme sonrası listeyi yeniden yükle (yine boyutlandıracak)
+            // Reload the list (and adjust size)
             loadFavorites();
         }
     }
 
+    /**
+     * Called when the “Back” button is pressed.
+     * Returns to the MainMenu screen.
+     */
     @FXML
     private void handleBackAction(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(
                 getClass().getResource("/com/mycompany/oopecommerceproject1/view/MainMenu.fxml"));
             Stage stage = (Stage) backButton.getScene().getWindow();
-            // Burada örnek olarak 600×500 gibi biraz daha geniş bir Scene açabilirsiniz:
+            // For example, open MainMenu in a 600×500 window
             stage.setScene(new Scene(root, 600, 500));
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,5 +1,17 @@
 package com.mycompany.oopecommerceproject1.model;
 
+/**
+ * Model class for an OrderItem.
+ * - id: primary key from the order_items table
+ * - orderId: the ID of the order this item belongs to
+ * - productId: the product’s ID
+ * - quantity: the quantity ordered
+ * - unitPrice: the unit price of the product at the time of order
+ *
+ * Two constructors:
+ * 1) Full constructor: used when reading from the DB (id provided)
+ * 2) Constructor for inserting a new order item: id assigned by DB
+ */
 public class OrderItem {
     private int id;
     private int orderId;
@@ -7,7 +19,7 @@ public class OrderItem {
     private int quantity;
     private double unitPrice;
 
-    // Tam yapıcı (DB’den okurken)
+    /** Full constructor (used when reading from DB) */
     public OrderItem(int id, int orderId, int productId, int quantity, double unitPrice) {
         this.id = id;
         this.orderId = orderId;
@@ -16,7 +28,7 @@ public class OrderItem {
         this.unitPrice = unitPrice;
     }
 
-    // Yeni sipariş satırı eklerken kullanacağımız yapıcı
+    /** Constructor for adding a new order item (id assigned by DB) */
     public OrderItem(int orderId, int productId, int quantity, double unitPrice) {
         this.orderId = orderId;
         this.productId = productId;
@@ -25,7 +37,6 @@ public class OrderItem {
     }
 
     // ───────── Getters & Setters ─────────
-
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -41,4 +52,3 @@ public class OrderItem {
     public double getUnitPrice() { return unitPrice; }
     public void setUnitPrice(double unitPrice) { this.unitPrice = unitPrice; }
 }
-

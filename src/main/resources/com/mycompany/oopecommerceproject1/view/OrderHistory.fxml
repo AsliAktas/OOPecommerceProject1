@@ -15,18 +15,21 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label text="Sipariş Geçmişi" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <!-- Title -->
+    <Label text="Order History" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
+    <!-- TableView listing past orders -->
     <TableView fx:id="ordersTable" prefHeight="350" prefWidth="580">
         <columns>
-            <TableColumn fx:id="orderIdColumn" text="Sipariş ID" prefWidth="80"/>
-            <TableColumn fx:id="dateColumn"    text="Tarih"      prefWidth="200"/>
-            <TableColumn fx:id="amountColumn"  text="Toplam (₺)" prefWidth="120"/>
+            <TableColumn fx:id="orderIdColumn" text="Order ID"   prefWidth="80"/>
+            <TableColumn fx:id="dateColumn"    text="Date"       prefWidth="200"/>
+            <TableColumn fx:id="amountColumn"  text="Total (₺)" prefWidth="120"/>
         </columns>
     </TableView>
 
+    <!-- Back button -->
     <HBox spacing="10">
-        <Button text="Geri Dön"
+        <Button text="Back"
                 fx:id="backButton"
                 onAction="#handleBackAction"/>
     </HBox>

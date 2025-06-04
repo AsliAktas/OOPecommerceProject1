@@ -15,19 +15,33 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Controller for the Login screen.
+ * - Validates username and password
+ * - On success, saves user info to Session and opens MainMenu.fxml
+ * - On failure, displays an error message
+ */
 public class LoginController {
 
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Label messageLabel;
 
+    /**
+     * Called when the “Login” button is pressed.
+     * - Checks for empty fields
+     * - Queries DAO for matching username/password
+     * - On success: stores username and userId in Session, loads MainMenu.fxml
+     * - On failure: shows error message
+     */
     @FXML
     private void handleLoginAction(ActionEvent event) {
         String user = usernameField.getText().trim();
         String pass = passwordField.getText().trim();
 
+        // Check for empty fields
         if (user.isEmpty() || pass.isEmpty()) {
-            messageLabel.setText("Lütfen kullanıcı adı ve şifre girin.");
+            messageLabel.setText("Please enter username and password.");
             return;
         }
 
@@ -35,11 +49,11 @@ public class LoginController {
         User found = userDao.findByUsernameAndPassword(user, pass);
 
         if (found != null) {
-            // Oturuma kullanıcı adını ve ID'sini kaydet:
+            // Save username and ID to Session
             Session.setCurrentUsername(found.getUsername());
 
             try {
-                // Giriş başarılı → Ana menü ekranını açalım
+                // Login succeeded → open MainMenu.fxml
                 Parent root = FXMLLoader.load(
                     getClass().getResource("/com/mycompany/oopecommerceproject1/view/MainMenu.fxml")
                 );
@@ -49,7 +63,8 @@ public class LoginController {
                 e.printStackTrace();
             }
         } else {
-            messageLabel.setText("Geçersiz kullanıcı adı veya şifre.");
+            // Invalid username or password
+            messageLabel.setText("Invalid username or password.");
         }
     }
 }

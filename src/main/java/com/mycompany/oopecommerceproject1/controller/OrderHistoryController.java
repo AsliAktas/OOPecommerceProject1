@@ -1,4 +1,3 @@
-
 package com.mycompany.oopecommerceproject1.controller;
 
 import com.mycompany.oopecommerceproject1.dao.OrderDAO;
@@ -23,8 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * “Sipariş Geçmişi” ekranının controller’ı.
- * Oturum açmış kullanıcının tüm siparişlerini tablo halinde listeler.
+ * Controller for the “Order History” screen:
+ * - Lists all orders of the logged-in user in a table
+ * - “Back” button returns to the main menu
  */
 public class OrderHistoryController {
 
@@ -38,15 +38,19 @@ public class OrderHistoryController {
 
     @FXML
     public void initialize() {
-        // 1) Sütunların hücre değerlerini sağlayacak callback’leri tanımla
+        // 1) Set up how each column gets its cell data
         orderIdColumn.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getOrderId()).asObject());
         dateColumn.setCellValueFactory(data -> data.getValue().dateProperty());
         amountColumn.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getTotalAmount()).asObject());
 
-        // 2) Siparişleri yükle
+        // 2) Load the order history into the table
         loadOrderHistory();
     }
 
+    /**
+     * Fetches all orders for the current user, formats their dates,
+     * and populates the TableView.
+     */
     private void loadOrderHistory() {
         List<Order> orders = OrderDAO.getAllOrdersByUser(currentUserId);
         ObservableList<OrderRow> rows = FXCollections.observableArrayList();
@@ -54,16 +58,20 @@ public class OrderHistoryController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         for (Order o : orders) {
-            String tarih = sdf.format(o.getOrderDate());
+            String formattedDate = sdf.format(o.getOrderDate());
             rows.add(new OrderRow(
                 o.getId(),
-                tarih,
+                formattedDate,
                 o.getTotalAmount()
             ));
         }
         ordersTable.setItems(rows);
     }
 
+    /**
+     * Called when the “Back” button is pressed.
+     * Returns to the MainMenu screen.
+     */
     @FXML
     private void handleBackAction(ActionEvent event) {
         try {
@@ -77,7 +85,7 @@ public class OrderHistoryController {
     }
 
     /**
-     * Yardımcı iç sınıf: Tabloya basacağımız her satırın taşıyacağı veriler.
+     * Helper inner class: holds data for each row in the order history TableView.
      */
     public static class OrderRow {
         private final int orderId;

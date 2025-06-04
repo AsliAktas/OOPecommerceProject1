@@ -15,27 +15,28 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
+    <!-- TableView to list all products -->
     <TableView fx:id="productTable" prefHeight="350" prefWidth="580">
         <columns>
-            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
-            <TableColumn fx:id="nameColumn" text="Ürün Adı" prefWidth="140"/>
-            <TableColumn fx:id="priceColumn" text="Fiyat (₺)" prefWidth="80"/>
-            <TableColumn fx:id="stockColumn" text="Stok" prefWidth="50"/>
-            <!-- Mevcut “Sepete Ekle” sütunu -->
-            <TableColumn fx:id="addColumn" text="Sepete Ekle" prefWidth="100"/>
-            <!-- Mevcut “Sepetten Kaldır” sütunu -->
-            <TableColumn fx:id="removeColumn" text="Sepetten Kaldır" prefWidth="120"/>
-            <!-- Yeni eklenen sütun: “Favori” -->
-            <TableColumn fx:id="favoriteColumn" text="Favori" prefWidth="80"/>
+            <TableColumn fx:id="idColumn" text="ID"                      prefWidth="50"/>
+            <TableColumn fx:id="nameColumn" text="Product Name"         prefWidth="140"/>
+            <TableColumn fx:id="priceColumn" text="Price (₺)"           prefWidth="80"/>
+            <TableColumn fx:id="stockColumn" text="Stock"               prefWidth="50"/>
+            <!-- “Add to Cart” column -->
+            <TableColumn fx:id="addColumn" text="Add to Cart"           prefWidth="100"/>
+            <!-- “Remove from Cart” column -->
+            <TableColumn fx:id="removeColumn" text="Remove from Cart"   prefWidth="120"/>
+            <!-- “Favorite” column -->
+            <TableColumn fx:id="favoriteColumn" text="Favorite"         prefWidth="80"/>
         </columns>
     </TableView>
 
-    <!-- Altta bir satır: “Geri Dön” + “Sepetimi Gör” butonları -->
+    <!-- Button row: Back + View Cart -->
     <HBox spacing="10">
-        <Button text="Geri Dön"
+        <Button text="Back"
                 fx:id="backButton"
                 onAction="#handleBackAction"/>
-        <Button text="Sepetimi Gör"
+        <Button text="View Cart"
                 fx:id="viewCartButton"
                 onAction="#handleViewCartAction"/>
     </HBox>

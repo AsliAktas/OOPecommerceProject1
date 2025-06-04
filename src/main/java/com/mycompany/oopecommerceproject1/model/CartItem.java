@@ -3,7 +3,7 @@ package com.mycompany.oopecommerceproject1.model;
 import java.sql.Timestamp;
 
 /**
- * Represents a row in the cart_items table:
+ * Model class representing a row in the cart_items table:
  *   id           INT AUTO_INCREMENT PRIMARY KEY
  *   user_id      INT NOT NULL            -- references users(id)
  *   product_id   INT NOT NULL            -- references products(id)
@@ -26,7 +26,7 @@ public class CartItem {
         this.addedAt = addedAt;
     }
 
-    /** Partial constructor (used when inserting a brand‐new cart row) */
+    /** Partial constructor (used when inserting a new cart row) */
     public CartItem(int userId, int productId, int quantity) {
         this.userId = userId;
         this.productId = productId;

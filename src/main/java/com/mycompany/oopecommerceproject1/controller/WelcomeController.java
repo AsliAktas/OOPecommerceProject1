@@ -1,4 +1,3 @@
-// src/main/java/com/mycompany/oopecommerceproject1/controller/WelcomeController.java
 package com.mycompany.oopecommerceproject1.controller;
 
 import java.io.IOException;
@@ -10,15 +9,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Controller for the welcome window (“Welcome screen”).
+ * - When “View Products” is clicked, opens ProductList.fxml in a new Stage
+ * - If additional buttons are needed in the future (e.g., “View Cart”), similar @FXML handlers can be added
+ */
 public class WelcomeController {
 
     /**
-     * “View Products” butonuna tıklanınca çağrılır.
+     * Called when the “View Products” button is pressed.
+     * Opens ProductList.fxml in a new window.
      */
     @FXML
     private void handleViewProductsAction(ActionEvent event) {
         try {
-            // Aşağıdaki path, src/main/resources içerisinde ProductList.fxml’in tam yolunu göstermeli:
+            // Get the path for ProductList.fxml under src/main/resources
             URL fxmlUrl = getClass().getResource(
                 "/com/mycompany/oopecommerceproject1/view/ProductList.fxml"
             );
@@ -37,5 +42,5 @@ public class WelcomeController {
         }
     }
 
-    // Eğer ileride “View Cart” gibi başka butonlarınız olacaksa, onlar için de benzer @FXML handler’lar ekleyebilirsiniz.
+    // If “View Cart” or other buttons are added in the future, similar @FXML handler methods can be defined here.
 }

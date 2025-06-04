@@ -1,5 +1,15 @@
 package com.mycompany.oopecommerceproject1.model;
 
+/**
+ * Model class for a Product.
+ * - id: primary key from the products table
+ * - name: product name
+ * - description: product description
+ * - price: unit price
+ * - stock: current stock quantity
+ *
+ * Plain getters and setters for each field.
+ */
 public class Product {
     private int id;
     private String name;
@@ -16,7 +26,6 @@ public class Product {
     }
 
     // ───────── Getters & Setters ─────────
-
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

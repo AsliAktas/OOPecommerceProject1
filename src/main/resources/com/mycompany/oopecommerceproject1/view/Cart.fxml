@@ -8,18 +8,23 @@
             fx:controller="com.mycompany.oopecommerceproject1.controller.CartController"
             prefWidth="600.0" prefHeight="400.0">
     <children>
+        <!-- TableView to list cart items -->
         <TableView fx:id="cartTable"
                    layoutX="20" layoutY="20"
                    prefWidth="560" prefHeight="300">
             <columns>
+                <!-- Product name column -->
                 <TableColumn fx:id="prodNameCol" text="Product"   prefWidth="180"/>
+                <!-- Quantity column -->
                 <TableColumn fx:id="qtyCol"      text="Qty"       prefWidth="80"/>
-                <!-- Aşağıdaki satırda "Subtotal" ile prefWidth arasında boşluk eklendi -->
+                <!-- Subtotal column -->
                 <TableColumn fx:id="subtotCol"   text="Subtotal"  prefWidth="200"/>
-                <TableColumn fx:id="removeCol"   text="Kaldır"     prefWidth="80"/>
+                <!-- Remove button column -->
+                <TableColumn fx:id="removeCol"   text="Remove"    prefWidth="80"/>
             </columns>
         </TableView>
 
+        <!-- “Close” button to return to main menu -->
         <Button fx:id="closeButton"
                 layoutX="20" layoutY="340"
                 text="Close"

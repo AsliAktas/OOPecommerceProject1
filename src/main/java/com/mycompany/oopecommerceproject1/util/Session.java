@@ -6,9 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Session: 
- * - Oturum açan kullanıcının kullanıcı adı ve ID'sini saklar.
- * - setCurrentUsername() çağrıldığında, veritabanından ID'yi getirir.
+ * Session utility class:
+ * - Stores the username and ID of the logged-in user
+ * - When setCurrentUsername() is called, also fetches the user’s ID from the database
  */
 public class Session {
     private static String currentUsername;
@@ -22,9 +22,13 @@ public class Session {
         return currentUserId;
     }
 
+    /**
+     * Sets the current username and retrieves the userId from the DB.
+     * @param username The user’s username
+     */
     public static void setCurrentUsername(String username) {
         currentUsername = username;
-        // Aynı anda currentUserId'yi DB'den alıyoruz:
+        // Fetch currentUserId from the database
         String sql = "SELECT id FROM users WHERE username = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

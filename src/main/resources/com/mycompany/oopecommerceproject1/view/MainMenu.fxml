@@ -11,18 +11,14 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label fx:id="welcomeLabel" text="Hoş geldiniz!" style="-fx-font-size: 24px;"/>
+    <!-- Welcome message -->
+    <Label fx:id="welcomeLabel" text="Welcome!" style="-fx-font-size: 24px;"/>
 
-    <Button text="Ürün Listesi" fx:id="productListButton" onAction="#handleProductListAction"/>
-
-    <Button text="Profil" fx:id="profileButton" onAction="#handleProfileAction"/>
-
-    <Button text="Sipariş Oluştur" fx:id="createOrderButton" onAction="#handleCreateOrderAction"/>
-
-    <!-- Yeni eklenen buton: Sipariş Geçmişi -->
-    <Button text="Sipariş Geçmişi" fx:id="orderHistoryButton" onAction="#handleOrderHistoryAction"/>
-
-    <Button text="Kartlarım" fx:id="myCardsButton" onAction="#handleMyCardsAction"/>
-
-    <Button text="Çıkış Yap" onAction="#handleLogoutAction"/>
+    <!-- Navigation buttons -->
+    <Button text="Product List" fx:id="productListButton" onAction="#handleProductListAction"/>
+    <Button text="Profile" fx:id="profileButton" onAction="#handleProfileAction"/>
+    <Button text="Create Order" fx:id="createOrderButton" onAction="#handleCreateOrderAction"/>
+    <Button text="Order History" fx:id="orderHistoryButton" onAction="#handleOrderHistoryAction"/>
+    <Button text="My Cards" fx:id="myCardsButton" onAction="#handleMyCardsAction"/>
+    <Button text="Logout" onAction="#handleLogoutAction"/>
 </VBox>

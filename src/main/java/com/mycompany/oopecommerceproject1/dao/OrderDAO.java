@@ -8,10 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * “orders” tablosuna yeni sipariş eklemek ve sipariş bilgisi getirmek için DAO.
+ * DAO class for orders table:
+ * - insertOrder: inserts a new order and sets its generated ID
+ * - getOrderById: retrieves a single order by ID
+ * - getAllOrdersByUser: returns all orders for a given user, ordered by date descending
  */
 public class OrderDAO {
 
+    /**
+     * Inserts a new order into the orders table.
+     * Sets the generated ID back into the Order object.
+     * @param order Order object with userId, cardId, totalAmount set
+     * @return true if insertion succeeds, false otherwise
+     */
     public static boolean insertOrder(Order order) {
         String sql = "INSERT INTO orders (user_id, card_id, total_amount) VALUES (?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
@@ -36,6 +45,11 @@ public class OrderDAO {
         }
     }
 
+    /**
+     * Retrieves a single Order by its ID.
+     * @param orderId The ID of the order
+     * @return An Order object if found, otherwise null
+     */
     public static Order getOrderById(int orderId) {
         String sql = "SELECT id, user_id, card_id, total_amount, order_date FROM orders WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -61,7 +75,9 @@ public class OrderDAO {
     }
 
     /**
-     * Verilen kullanıcıya ait tüm siparişleri döner.
+     * Returns all orders made by a given user, ordered by order_date descending.
+     * @param userId The user’s ID
+     * @return List<Order> (empty if none found)
      */
     public static List<Order> getAllOrdersByUser(int userId) {
         List<Order> orders = new ArrayList<>();

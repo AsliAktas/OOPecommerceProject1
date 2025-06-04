@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Kredi kartı işlemlerini (ekleme, güncelleme, var mı kontrol etme, listeleme) yapan DAO sınıfı.
+ * DAO class for credit card operations:
+ * - List all cards for a user
+ * - Add a new card
+ * - Update an existing card (updates the most recently added one)
  */
 public class CreditCardDAO {
 
@@ -19,13 +22,15 @@ public class CreditCardDAO {
         try {
             tempConn = DBConnection.getConnection();
         } catch (SQLException e) {
-            throw new RuntimeException("Veritabanı bağlantısı oluşturulamadı.", e);
+            throw new RuntimeException("Unable to establish database connection.", e);
         }
         conn = tempConn;
     }
 
     /**
-     * Kullanıcının bütün kartlarını döner.
+     * Returns all credit cards for a given user.
+     * @param userId The user’s ID
+     * @return List of CreditCard objects (empty list if none)
      */
     public List<CreditCard> getAllCardsByUserId(int userId) {
         String sql = "SELECT * FROM credit_cards WHERE user_id = ?";
@@ -49,7 +54,9 @@ public class CreditCardDAO {
     }
 
     /**
-     * Yeni bir kredi kartı kaydeder.
+     * Inserts a new credit card record.
+     * @param card CreditCard object (userId, cardNumber, expiryMonth, expiryYear, cvv must be set)
+     * @return true if insertion succeeds, false otherwise
      */
     public boolean addCard(CreditCard card) {
         String sql = "INSERT INTO credit_cards(user_id, card_number, expiry_month, expiry_year, cvv) " +
@@ -68,10 +75,14 @@ public class CreditCardDAO {
     }
 
     /**
-     * Mevcut kredi kartını günceller (user_id’ye göre; eğer birden fazla varsa en sonuncuyu günceller).
+     * Updates the most recently added credit card for the user.
+     * - Finds the highest card ID for this user
+     * - Updates that row with new card details
+     * @param card Updated CreditCard object (userId and new details must be set)
+     * @return true if update succeeds, false otherwise
      */
     public boolean updateCard(CreditCard card) {
-        // Burada kullanıcıya ait EN SON eklenen kartı güncellemek için önce en son id'yi çekelim:
+        // 1) Find the ID of the most recently added card for this user
         String findLastSql = "SELECT id FROM credit_cards WHERE user_id = ? ORDER BY id DESC LIMIT 1";
         try (PreparedStatement findStmt = conn.prepareStatement(findLastSql)) {
             findStmt.setInt(1, card.getUserId());
@@ -79,6 +90,7 @@ public class CreditCardDAO {
             if (rs.next()) {
                 int lastCardId = rs.getInt("id");
 
+                // 2) Update that card by ID
                 String updateSql = "UPDATE credit_cards SET card_number = ?, expiry_month = ?, expiry_year = ?, cvv = ? WHERE id = ?";
                 try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
                     updateStmt.setString(1, card.getCardNumber());

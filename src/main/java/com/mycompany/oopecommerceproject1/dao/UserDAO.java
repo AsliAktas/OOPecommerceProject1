@@ -9,25 +9,31 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Kullanıcı tablosu ile ilgili CRUD işlemlerini yapar.
+ * DAO class for operations on the users table:
+ * - findByUsernameAndPassword: for login matching
+ * - updateEmail: updates the user’s email address
+ * - updatePassword: checks the current password and updates to a new password
  */
 public class UserDAO {
 
     private final Connection conn;
 
     public UserDAO() {
-        // DBConnection.getConnection() SQLException fırlatıyorsa burada yakalayalım:
+        // If DBConnection.getConnection() throws SQLException, wrap in RuntimeException
         Connection tempConn;
         try {
             tempConn = DBConnection.getConnection();
         } catch (SQLException e) {
-            throw new RuntimeException("Veritabanı bağlantısı oluşturulamadı.", e);
+            throw new RuntimeException("Unable to establish database connection.", e);
         }
         conn = tempConn;
     }
 
     /**
-     * Giriş işlemi için: username ve password eşleşiyorsa User objesi döner, yoksa null.
+     * For login: returns a User object if username/password match, otherwise null.
+     * @param username The username
+     * @param password The password
+     * @return A User object or null
      */
     public User findByUsernameAndPassword(String username, String password) {
         String sql = "SELECT id, username, email, password FROM users WHERE username = ? AND password = ?";
@@ -50,7 +56,10 @@ public class UserDAO {
     }
 
     /**
-     * Kullanıcının e-posta adresini günceller.
+     * Updates the user’s email address.
+     * @param userId   The user’s ID
+     * @param newEmail The new email address
+     * @return true if update succeeds, false otherwise
      */
     public boolean updateEmail(int userId, String newEmail) {
         String sql = "UPDATE users SET email = ? WHERE id = ?";
@@ -65,11 +74,14 @@ public class UserDAO {
     }
 
     /**
-     * Kullanıcının mevcut şifresini kontrol edip, yeni şifre ile değiştirir.
-     * @return true: eski şifre doğru ve güncelleme başarılı. false: değilse.
+     * Checks the current password and, if correct, updates it to the new password.
+     * @param userId      The user’s ID
+     * @param oldPassword The current (old) password
+     * @param newPassword The new password
+     * @return true if old password matches and update succeeds; false otherwise
      */
     public boolean updatePassword(int userId, String oldPassword, String newPassword) {
-        // 1. Adım: Mevcut eski şifre doğru mu?
+        // Step 1: Verify that the existing (old) password is correct
         String checkSql = "SELECT password FROM users WHERE id = ?";
         try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
             checkStmt.setInt(1, userId);
@@ -77,17 +89,17 @@ public class UserDAO {
             if (rs.next()) {
                 String currentPassInDb = rs.getString("password");
                 if (!currentPassInDb.equals(oldPassword)) {
-                    return false; // Eski şifre yanlış
+                    return false; // Old password is incorrect
                 }
             } else {
-                return false; // Kullanıcı bulunamadı
+                return false; // User not found
             }
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
 
-        // 2. Adım: Yeni şifre ile update işlemi
+        // Step 2: Perform the update with the new password
         String updateSql = "UPDATE users SET password = ? WHERE id = ?";
         try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
             updateStmt.setString(1, newPassword);

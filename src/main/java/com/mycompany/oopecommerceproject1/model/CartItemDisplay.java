@@ -1,11 +1,10 @@
 package com.mycompany.oopecommerceproject1.model;
 
 /**
- * CartItemDisplay is a DTO used in the Cart table.
- * It holds:
- *   - cartItemId (the primary key from cart_items table)
- *   - productName (for display)
- *   - quantity (cart quantity)
+ * DTO used in the Cart TableView:
+ * - cartItemId: the primary key from the cart_items table
+ * - productName: for display
+ * - quantity: the quantity in the cart
  */
 public class CartItemDisplay {
     private int cartItemId;

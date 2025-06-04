@@ -9,15 +9,18 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.mycompany.oopecommerceproject1.controller.MyCardsController"
             prefWidth="600" prefHeight="400">
+    <!-- Top: title label -->
     <top>
-        <Label text="Kayıtlı Kredi Kartlarım" style="-fx-font-size: 18px; -fx-padding: 10;"/>
+        <Label text="My Saved Credit Cards" style="-fx-font-size: 18px; -fx-padding: 10;"/>
     </top>
+    <!-- Center: ListView showing saved cards -->
     <center>
         <ListView fx:id="cardsListView" prefWidth="580" prefHeight="300"/>
     </center>
+    <!-- Bottom: Back button -->
     <bottom>
         <VBox alignment="CENTER" spacing="10" style="-fx-padding: 10;">
-            <Button text="Geri Dön" onAction="#handleBackAction"/>
+            <Button text="Back" onAction="#handleBackAction"/>
         </VBox>
     </bottom>
 </BorderPane>

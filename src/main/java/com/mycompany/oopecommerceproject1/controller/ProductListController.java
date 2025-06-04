@@ -26,11 +26,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Ürün listesini gösterir. Her satırda:
- *   • “Sepete Ekle”
- *   • “Sepetten Kaldır”
- *   • “Favori Ekle/Kaldır” butonları var.
- * Ayrıca altta “Sepetimi Gör” butonu bulunuyor.
+ * Controller for the “Product List” screen:
+ * - Loads all products into a table
+ * - Provides “Add to Cart”, “Remove from Cart”, and “Favorite” buttons dynamically for each row
+ * - Bottom has “Back” and “View Cart” buttons for navigation
  */
 public class ProductListController {
 
@@ -39,54 +38,54 @@ public class ProductListController {
     @FXML private TableColumn<Product, String> nameColumn;
     @FXML private TableColumn<Product, Double> priceColumn;
     @FXML private TableColumn<Product, Integer> stockColumn;
-    @FXML private TableColumn<Product, Void> addColumn;       // “Sepete Ekle”
-    @FXML private TableColumn<Product, Void> removeColumn;    // “Sepetten Kaldır”
-    @FXML private TableColumn<Product, Void> favoriteColumn;  // “Favori Ekle/Kaldır”
+    @FXML private TableColumn<Product, Void> addColumn;       // “Add to Cart”
+    @FXML private TableColumn<Product, Void> removeColumn;    // “Remove from Cart”
+    @FXML private TableColumn<Product, Void> favoriteColumn;  // “Favorite” button
 
     @FXML private Button backButton;
-    @FXML private Button viewCartButton;  // “Sepetimi Gör” butonu
+    @FXML private Button viewCartButton;  // “View Cart” button
 
     private final int currentUserId = Session.getCurrentUserId();
 
     @FXML
     public void initialize() {
-        // 1) Temel sütunların PropertyValueFactory ile eşlenmesi
+        // 1) Bind basic columns to Product fields using PropertyValueFactory
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         stockColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
 
-        // 2) “Sepete Ekle” butonu için hücre fabrikası
+        // 2) Cell factory for “Add to Cart” button
         addColumn.setCellFactory(new Callback<>() {
             @Override
             public TableCell<Product, Void> call(final TableColumn<Product, Void> param) {
                 return new TableCell<>() {
-                    private final Button btn = new Button("Sepete Ekle");
+                    private final Button btn = new Button("Add to Cart");
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Product prod = getTableView().getItems().get(getIndex());
                             int productId = prod.getId();
 
-                            // Eğer stok 0 ise hiçbir şey yapma
+                            // If stock is 0, do nothing
                             if (prod.getStock() <= 0) {
                                 return;
                             }
 
-                            // 1) Sepette zaten varsa miktarı artır, yoksa yeni satır ekle
+                            // 1) If already in cart, increment quantity; otherwise insert new
                             CartItem existing = CartItemDAO.getCartItemByUserAndProduct(currentUserId, productId);
                             if (existing != null) {
-                                int yeniMiktar = existing.getQuantity() + 1;
-                                CartItemDAO.updateCartItemQuantity(existing.getId(), yeniMiktar);
+                                int newQuantity = existing.getQuantity() + 1;
+                                CartItemDAO.updateCartItemQuantity(existing.getId(), newQuantity);
                             } else {
                                 CartItemDAO.insertCartItem(new CartItem(currentUserId, productId, 1));
                             }
 
-                            // 2) Ürünün stoğunu 1 azalt
+                            // 2) Decrement product stock by 1
                             prod.setStock(prod.getStock() - 1);
                             ProductDAO.updateProduct(prod);
 
-                            // 3) Tabloyu yeniden yükle (stok ve buton durumu güncellenir)
+                            // 3) Reload products to update stock and button states
                             loadProducts();
                         });
                         setPadding(new Insets(2, 2, 2, 2));
@@ -99,7 +98,7 @@ public class ProductListController {
                             setGraphic(null);
                         } else {
                             Product p = getTableView().getItems().get(getIndex());
-                            // Eğer stok 0 ise “Ekle” butonu pasif
+                            // Disable “Add to Cart” if stock is 0
                             btn.setDisable(p.getStock() <= 0);
                             setGraphic(btn);
                         }
@@ -108,37 +107,37 @@ public class ProductListController {
             }
         });
 
-        // 3) “Sepetten Kaldır” butonu için hücre fabrikası
+        // 3) Cell factory for “Remove from Cart” button
         removeColumn.setCellFactory(new Callback<>() {
             @Override
             public TableCell<Product, Void> call(final TableColumn<Product, Void> param) {
                 return new TableCell<>() {
-                    private final Button btn = new Button("Sepetten Kaldır");
+                    private final Button btn = new Button("Remove from Cart");
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Product prod = getTableView().getItems().get(getIndex());
                             int productId = prod.getId();
 
-                            // Sepette mevcut mu kontrol et
+                            // Check if this product is in the cart
                             CartItem existing = CartItemDAO.getCartItemByUserAndProduct(currentUserId, productId);
                             if (existing == null) {
-                                // Sepette yoksa hiçbir şey yapma
+                                // If not in cart, do nothing
                                 return;
                             }
 
-                            // 1) Sepet kaydını sil veya miktarı 1 azalt
+                            // 1) If quantity > 1, decrement; otherwise delete record
                             if (existing.getQuantity() > 1) {
                                 CartItemDAO.updateCartItemQuantity(existing.getId(), existing.getQuantity() - 1);
                             } else {
                                 CartItemDAO.deleteCartItem(existing.getId());
                             }
 
-                            // 2) Ürünün stoğunu 1 artır
+                            // 2) Increment product stock by 1
                             prod.setStock(prod.getStock() + 1);
                             ProductDAO.updateProduct(prod);
 
-                            // 3) Tabloyu yeniden yükle
+                            // 3) Reload products
                             loadProducts();
                         });
                         setPadding(new Insets(2, 2, 2, 2));
@@ -151,9 +150,8 @@ public class ProductListController {
                             setGraphic(null);
                         } else {
                             Product p = getTableView().getItems().get(getIndex());
-                            // Sepette bu üründen kaç adet var?
+                            // Enable button only if this product is in the cart
                             CartItem existing = CartItemDAO.getCartItemByUserAndProduct(currentUserId, p.getId());
-                            // Eğer sepette yoksa buton pasif, varsa aktif
                             btn.setDisable(existing == null);
                             setGraphic(btn);
                         }
@@ -162,7 +160,7 @@ public class ProductListController {
             }
         });
 
-        // 4) “Favori Ekle/Kaldır” butonu için hücre fabrikası
+        // 4) Cell factory for “Favorite” button
         favoriteColumn.setCellFactory(new Callback<>() {
             @Override
             public TableCell<Product, Void> call(final TableColumn<Product, Void> param) {
@@ -174,23 +172,27 @@ public class ProductListController {
                             Product prod = getTableView().getItems().get(getIndex());
                             int productId = prod.getId();
 
-                            boolean zatenFavori = FavoriteDAO.isFavorite(currentUserId, productId);
-                            if (zatenFavori) {
-                                // Favoriden kaldır
+                            boolean alreadyFav = FavoriteDAO.isFavorite(currentUserId, productId);
+                            if (alreadyFav) {
+                                // Remove from favorites if already favorited
                                 FavoriteDAO.removeFavorite(currentUserId, productId);
                             } else {
-                                // Favoriye ekle
+                                // Add to favorites otherwise
                                 FavoriteDAO.addFavorite(currentUserId, productId);
                             }
-                            // Buton metnini güncelle
+                            // Update button text based on favorite status
                             updateButtonText(prod);
                         });
                         setPadding(new Insets(2, 2, 2, 2));
                     }
 
+                    /**
+                     * Updates the button text depending on whether the product
+                     * is already in the favorites. “★” = favorited, “☆” = not favorited.
+                     */
                     private void updateButtonText(Product p) {
                         boolean fav = FavoriteDAO.isFavorite(currentUserId, p.getId());
-                        btn.setText(fav ? "★" : "☆"); // “★” favoride, “☆” değil
+                        btn.setText(fav ? "★" : "☆");
                     }
 
                     @Override
@@ -200,7 +202,6 @@ public class ProductListController {
                             setGraphic(null);
                         } else {
                             Product p = getTableView().getItems().get(getIndex());
-                            // Buton metnini favori durumuna göre ayarla
                             updateButtonText(p);
                             setGraphic(btn);
                         }
@@ -209,17 +210,23 @@ public class ProductListController {
             }
         });
 
-        // 5) Ürünleri tabloya yükle
+        // 5) Finally, load all products into the table
         loadProducts();
     }
 
-    /** Ürünleri DB’den çekip tabloya koyan yardımcı metot */
+    /**
+     * Retrieves all products from the database and displays them in the TableView.
+     */
     private void loadProducts() {
         List<Product> productList = ProductDAO.getAllProducts();
         ObservableList<Product> products = FXCollections.observableArrayList(productList);
         productTable.setItems(products);
     }
 
+    /**
+     * Called when the “Back” button is pressed.
+     * Returns to MainMenu.fxml.
+     */
     @FXML
     private void handleBackAction(ActionEvent event) {
         try {
@@ -232,6 +239,10 @@ public class ProductListController {
         }
     }
 
+    /**
+     * Called when the “View Cart” button is pressed.
+     * Opens Cart.fxml.
+     */
     @FXML
     private void handleViewCartAction(ActionEvent event) {
         try {

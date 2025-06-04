@@ -1,7 +1,15 @@
 package com.mycompany.oopecommerceproject1.model;
 
 /**
- * Kredi kartı model sınıfı.
+ * Credit card model class.
+ * - userId: the ID of the user who owns the card
+ * - cardNumber: the card number (stored as String)
+ * - expiryMonth: expiration month
+ * - expiryYear: expiration year
+ * - cvv: card CVV code
+ *
+ * The toString() method determines what text appears in a ListView.
+ * For security, only the last four digits of the card number are shown.
  */
 public class CreditCard {
     private int userId;
@@ -18,11 +26,10 @@ public class CreditCard {
         this.cvv = cvv;
     }
 
-    // ---------- Getters / Setters ----------
+    // ───────── Getters / Setters ─────────
     public int getUserId() {
         return userId;
     }
-
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -30,7 +37,6 @@ public class CreditCard {
     public String getCardNumber() {
         return cardNumber;
     }
-
     public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
     }
@@ -38,7 +44,6 @@ public class CreditCard {
     public int getExpiryMonth() {
         return expiryMonth;
     }
-
     public void setExpiryMonth(int expiryMonth) {
         this.expiryMonth = expiryMonth;
     }
@@ -46,7 +51,6 @@ public class CreditCard {
     public int getExpiryYear() {
         return expiryYear;
     }
-
     public void setExpiryYear(int expiryYear) {
         this.expiryYear = expiryYear;
     }
@@ -54,29 +58,24 @@ public class CreditCard {
     public String getCvv() {
         return cvv;
     }
-
     public void setCvv(String cvv) {
         this.cvv = cvv;
     }
 
     /**
-     * toString() metodunu ezerek ListView içinde görünecek metni belirliyoruz.
-     * Örneğin:
-     * - Tüm kart numarasını göstermek isterseniz: cardNumber
-     * - Ya da yalnızca son dört haneyi göstermek isterseniz: "**** **** **** " + last4
+     * Overrides toString() to define what text is shown in a ListView.
+     * - Only the last four digits of the card are shown for security
+     * - e.g.: “**** **** **** 1234 (Exp: MM/YYYY)”
      */
     @Override
     public String toString() {
-        // 1) Tüm kart numarasını göstermek isterseniz:
-        // return cardNumber + "  (Exp: " + expiryMonth + "/" + expiryYear + ")";
-
-        // 2) Sadece son dört haneyi göstermek daha güvenli:
         String masked;
         if (cardNumber != null && cardNumber.length() >= 4) {
             String last4 = cardNumber.substring(cardNumber.length() - 4);
             masked = "**** **** **** " + last4;
         } else {
-            masked = cardNumber; // Kart numarası kısa veya hatalıysa olduğu gibi yaz
+            // If card number is too short or invalid, show as-is
+            masked = cardNumber;
         }
         return masked + "  (Exp: " + expiryMonth + "/" + expiryYear + ")";
     }

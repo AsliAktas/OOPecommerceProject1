@@ -28,50 +28,54 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * Sepet ekranı:
- *  - Kullanıcının sepete eklediği ürünleri listeler
- *  - “Kaldır” butonuna tıklanınca sepetten sil ve stok+1 yap
+ * Controller for the Cart screen:
+ * - Lists the items the user has added to the cart
+ * - Handles “Remove” button clicks: removes from cart and increments stock by 1
+ * - Handles “Close” button to return to the main menu
  */
 public class CartController {
 
+    // FXML bindings: the TableView and its columns, plus the Close button
     @FXML private TableView<CartRow> cartTable;
     @FXML private TableColumn<CartRow, String> prodNameCol;
     @FXML private TableColumn<CartRow, Integer> qtyCol;
     @FXML private TableColumn<CartRow, Double> subtotCol;
-    @FXML private TableColumn<CartRow, Void> removeCol; // “Kaldır” sütunu
+    @FXML private TableColumn<CartRow, Void> removeCol; // “Remove” column
     @FXML private Button closeButton;
 
+    // Get the currently logged-in user’s ID from Session
     private int currentUserId = Session.getCurrentUserId();
 
     @FXML
     public void initialize() {
-        // 1) Sütunların hücre değerlerini sağlayacak callback’leri tanımla
+        // 1) Set up how each column gets its cell data
         prodNameCol.setCellValueFactory(data -> data.getValue().nameProperty());
         qtyCol.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getQuantity()).asObject());
         subtotCol.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getSubtotal()).asObject());
 
-        // 2) “Kaldır” butonu için hücre fabrikası
+        // 2) Define a cell factory for the “Remove” button
         removeCol.setCellFactory(new Callback<>() {
             @Override
             public TableCell<CartRow, Void> call(final TableColumn<CartRow, Void> param) {
                 return new TableCell<>() {
-                    private final Button btn = new Button("Kaldır");
+                    private final Button btn = new Button("Remove");
 
                     {
+                        // When button is clicked, remove the cart item and return stock to product
                         btn.setOnAction((ActionEvent event) -> {
                             CartRow row = getTableView().getItems().get(getIndex());
 
-                            // 1) Sepet kaydını sil
+                            // 1) Delete the cart record
                             CartItemDAO.deleteCartItem(row.getCartItemId());
 
-                            // 2) Ürünü stok tablosuna geri ekle (stok+1)
+                            // 2) Add the product back to stock (+1)
                             Product p = ProductDAO.getProductById(row.getProductId());
                             if (p != null) {
                                 p.setStock(p.getStock() + 1);
                                 ProductDAO.updateProduct(p);
                             }
 
-                            // 3) Tabloyu yeniden yükle
+                            // 3) Reload the table
                             loadCartItems();
                         });
                         setPadding(new Insets(2, 2, 2, 2));
@@ -90,10 +94,14 @@ public class CartController {
             }
         });
 
-        // 3) Sepet öğelerini yükle
+        // 3) Load the cart items into the table
         loadCartItems();
     }
 
+    /**
+     * Fetches all cart items for the current user from the database
+     * and populates the TableView.
+     */
     private void loadCartItems() {
         List<CartItem> items = CartItemDAO.getAllCartItemsByUser(currentUserId);
         ObservableList<CartRow> rows = FXCollections.observableArrayList();
@@ -113,6 +121,10 @@ public class CartController {
         cartTable.setItems(rows);
     }
 
+    /**
+     * Called when the “Close” button is pressed.
+     * Returns to the MainMenu screen.
+     */
     @FXML
     private void handleCloseAction(ActionEvent event) {
         try {
@@ -126,7 +138,10 @@ public class CartController {
     }
 
     /**
-     * Yardımcı iç sınıf: Tablo sütunlarına veri sağlar.
+     * Helper inner class: holds data for each row in the cart TableView.
+     * - cartItemId: the primary key from cart_items table
+     * - productId: the ID of the product
+     * - name, price, quantity, subtotal: values displayed in columns
      */
     public static class CartRow {
         private final int cartItemId;

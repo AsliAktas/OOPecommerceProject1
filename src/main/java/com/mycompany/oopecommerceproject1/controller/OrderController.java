@@ -34,16 +34,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * “Sipariş Oluştur” penceresinin controller’ı.
- *   1) Kullanıcının kayıtlı kredi kartlarını ComboBox’ta gösterir.
- *   2) Sepetteki ürünleri listeler ve toplam tutarı hesaplar.
- *   3) “Siparişi Onayla” butonuna basıldığında:
- *      • Siparişi orders tablosuna ekler
- *      • Her bir sepet kalemi için order_items satırları ekler
- *      • Sepeti temizler (cart_items tablosundan)
- *      • Başarılıysa kullanıcıya bir “Siparişiniz alındı” bildirimi gösterir
- *      • Ana menüye geri döner
- *   4) “İptal” butonuna basılınca ana menüye döner, herhangi bir değişiklik yapmaz.
+ * Controller for the “Create Order” window:
+ * 1) Loads the user’s saved credit cards into a ComboBox
+ * 2) Lists the items in the cart and calculates the total amount
+ * 3) When “Confirm Order” is pressed:
+ *    • Inserts a new Order into the orders table
+ *    • Creates order_items rows for each cart item
+ *    • Clears the cart_items table
+ *    • If successful, shows a confirmation alert
+ *    • Returns to the main menu
+ * 4) When “Cancel” is pressed, returns to the main menu without making changes
  */
 public class OrderController {
 
@@ -62,19 +62,24 @@ public class OrderController {
 
     @FXML
     public void initialize() {
-        // 1) Kullanıcının kredi kartlarını yükle
+        // 1) Load the user’s credit cards into the ComboBox
         List<CreditCard> cards = new CreditCardDAO().getAllCardsByUserId(currentUserId);
         cardComboBox.setItems(FXCollections.observableArrayList(cards));
 
-        // 2) Sepetteki öğeleri listele
+        // 2) Bind columns to CartRow properties
         prodNameCol.setCellValueFactory(data -> data.getValue().nameProperty());
         qtyCol.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getQuantity()).asObject());
         unitPriceCol.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getUnitPrice()).asObject());
         subtotCol.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getSubtotal()).asObject());
 
+        // Load the cart items and total
         loadCartItems();
     }
 
+    /**
+     * Fetches the current user’s cart items, populates the TableView,
+     * and calculates the total amount, updating totalLabel.
+     */
     private void loadCartItems() {
         List<CartItem> items = CartItemDAO.getAllCartItemsByUser(currentUserId);
         ObservableList<CartRow> rows = FXCollections.observableArrayList();
@@ -102,44 +107,53 @@ public class OrderController {
         totalLabel.setText(String.format("%.2f", calculatedTotal));
     }
 
+    /**
+     * Called when the “Confirm Order” button is pressed:
+     * - If no card is selected, shows an error on totalLabel
+     * - Creates a new Order and inserts it
+     * - Creates OrderItem rows for each cart row
+     * - Deletes cart items from cart_items table
+     * - Shows an information alert if successful
+     * - Returns to the main menu
+     */
     @FXML
     private void handleConfirmOrderAction(ActionEvent event) {
         CreditCard selectedCard = cardComboBox.getSelectionModel().getSelectedItem();
         if (selectedCard == null) {
-            totalLabel.setText("Kart seçin!");
+            totalLabel.setText("Select a card!");
             return;
         }
 
-        // 1) Yeni Order objesi oluştur
+        // 1) Create a new Order object
         Order newOrder = new Order(currentUserId, selectedCard.getUserId(), calculatedTotal);
         boolean orderInserted = OrderDAO.insertOrder(newOrder);
         if (!orderInserted) {
-            totalLabel.setText("Sipariş eklenemedi.");
+            totalLabel.setText("Order could not be placed.");
             return;
         }
 
         int orderId = newOrder.getId();
 
-        // 2) Her CartItem için OrderItem kaydı oluştur
+        // 2) Create OrderItem entries for each CartRow
         List<CartRow> rows = new ArrayList<>(cartTable.getItems());
         for (CartRow r : rows) {
             OrderItem item = new OrderItem(orderId, r.getProductId(), r.getQuantity(), r.getUnitPrice());
             OrderItemDAO.insertOrderItem(item);
         }
 
-        // 3) Sepeti temizle
+        // 3) Clear the cart
         for (CartRow r : rows) {
             CartItemDAO.deleteCartItem(r.getCartItemId());
         }
 
-        // 4) Başarılıysa kullanıcıya “Siparişiniz alındı” bildirimi göster
+        // 4) Show a success alert
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Sipariş Onayı");
+        alert.setTitle("Order Confirmation");
         alert.setHeaderText(null);
-        alert.setContentText("Siparişiniz başarıyla alındı!");
+        alert.setContentText("Your order has been placed successfully!");
         alert.showAndWait();
 
-        // 5) Ana menüye geri dön
+        // 5) Return to the main menu
         try {
             Parent root = FXMLLoader.load(
                 getClass().getResource("/com/mycompany/oopecommerceproject1/view/MainMenu.fxml"));
@@ -150,6 +164,10 @@ public class OrderController {
         }
     }
 
+    /**
+     * Called when the “Cancel” button is pressed.
+     * Returns to the main menu without making any changes.
+     */
     @FXML
     private void handleCancelAction(ActionEvent event) {
         try {
@@ -163,7 +181,7 @@ public class OrderController {
     }
 
     /**
-     * Yardımcı iç sınıf: Tablo sütunlarına veri sağlar.
+     * Helper inner class: holds data for each row in the cart TableView.
      */
     public static class CartRow {
         private final int cartItemId;

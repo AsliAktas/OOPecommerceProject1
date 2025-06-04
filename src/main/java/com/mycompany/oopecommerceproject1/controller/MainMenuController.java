@@ -11,6 +11,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Controller for the application’s main menu.
+ * - Provides buttons to navigate to different sections (Product List, Profile, Create Order, etc.)
+ * - “Logout” button exits the application
+ */
 public class MainMenuController {
 
     @FXML private Label welcomeLabel;
@@ -18,13 +23,21 @@ public class MainMenuController {
     @FXML private Button profileButton;
     @FXML private Button myCardsButton;
     @FXML private Button createOrderButton;
-    @FXML private Button orderHistoryButton;   // “Sipariş Geçmişi” butonu
+    @FXML private Button orderHistoryButton;   // “Order History” button
 
+    /**
+     * Called when the “Logout” button is pressed.
+     * Exits the application.
+     */
     @FXML
     private void handleLogoutAction(ActionEvent event) {
         System.exit(0);
     }
 
+    /**
+     * Called when the “Product List” button is pressed.
+     * Loads ProductList.fxml.
+     */
     @FXML
     private void handleProductListAction(ActionEvent event) {
         try {
@@ -37,18 +50,27 @@ public class MainMenuController {
         }
     }
 
+    /**
+     * Called when the “Profile” button is pressed.
+     * Loads Profile.fxml.
+     */
     @FXML
     private void handleProfileAction(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(
                 getClass().getResource("/com/mycompany/oopecommerceproject1/view/Profile.fxml"));
             Stage stage = (Stage) profileButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 500, 520)); // Profil ekranı boyutu
+            // Profile screen size is set to 500×520
+            stage.setScene(new Scene(root, 500, 520));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Called when the “Create Order” button is pressed.
+     * Loads Order.fxml.
+     */
     @FXML
     private void handleCreateOrderAction(ActionEvent event) {
         try {
@@ -61,6 +83,10 @@ public class MainMenuController {
         }
     }
 
+    /**
+     * Called when the “Order History” button is pressed.
+     * Loads OrderHistory.fxml.
+     */
     @FXML
     private void handleOrderHistoryAction(ActionEvent event) {
         try {
@@ -73,6 +99,10 @@ public class MainMenuController {
         }
     }
 
+    /**
+     * Called when the “My Cards” button is pressed.
+     * Loads MyCards.fxml.
+     */
     @FXML
     private void handleMyCardsAction(ActionEvent event) {
         try {

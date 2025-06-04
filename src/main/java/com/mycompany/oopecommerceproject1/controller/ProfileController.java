@@ -19,15 +19,15 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Profil ekranı:
- *  - Mevcut kullanıcı bilgilerini (e-posta, şifre) güncelleme
- *  - Kredi kartı ekleme/güncelleme (birden fazla kart ekleyebilme)
- *  - Geri dön butonu
+ * Controller for the Profile screen:
+ * - Updates existing user information (email, password)
+ * - Allows adding/updating credit cards (multiple cards supported)
+ * - “Back” button returns to the main menu
  */
 public class ProfileController {
 
-    // ----- Profil alanları -----
-    @FXML private TextField usernameField;      // Salt görüntüleme amaçlı
+    // ----- Profile fields -----
+    @FXML private TextField usernameField;      // For display only
     @FXML private TextField emailField;
     @FXML private PasswordField oldPasswordField;
     @FXML private PasswordField newPasswordField;
@@ -35,7 +35,7 @@ public class ProfileController {
     @FXML private Button updateButton;
     @FXML private Label messageLabel;
 
-    // ----- Kredi Kartı alanları -----
+    // ----- Credit Card fields -----
     @FXML private TextField cardNumberField;
     @FXML private TextField expiryMonthField;
     @FXML private TextField expiryYearField;
@@ -44,31 +44,31 @@ public class ProfileController {
     @FXML private Button addCardButton;
     @FXML private Label cardMessageLabel;
 
-    // ----- Ortak -----
+    // ----- Common (Back) button -----
     @FXML private Button backButton;
 
     @FXML
     public void initialize() {
         int currentUserId = Session.getCurrentUserId();
+        // If session userId is invalid, print error
         if (currentUserId <= 0) {
-            System.err.println("Session.getCurrentUserId() 0 veya negatif döndü! Önce login olun.");
+            System.err.println("Session.getCurrentUserId() returned 0 or negative! Please log in first.");
             return;
         }
 
-        // Kullanıcı adını göstermek (sadece görüntüleme)
+        // Display the username (read-only)
         usernameField.setText(Session.getCurrentUsername());
 
-        // 2) Kredi kartı var mı kontrol et
+        // Check if user has any saved credit cards
         CreditCardDAO cardDao = new CreditCardDAO();
         List<CreditCard> userCards = cardDao.getAllCardsByUserId(currentUserId);
 
-        // Eğer hiç kart yoksa: "Kart Ekle" aktif, "Kart Güncelle" pasif
+        // If no cards exist: disable “Update Card”, enable “Add Card”
         if (userCards.isEmpty()) {
             updateCardButton.setDisable(true);
             addCardButton.setDisable(false);
         } else {
-            // Birden fazla kartı listeleyebileceğimiz detay ekranınız yoksa en son ekleneni veya ilkini gösterelim
-            // Burada örnek olarak en son eklenenı değil, sadece ilkini doldurduk
+            // If multiple cards exist, show only the first one (as an example)
             CreditCard existingCard = userCards.get(0);
             cardNumberField.setText(existingCard.getCardNumber());
             expiryMonthField.setText(String.valueOf(existingCard.getExpiryMonth()));
@@ -76,16 +76,23 @@ public class ProfileController {
             cvvField.setText(existingCard.getCvv());
 
             updateCardButton.setDisable(false);
-            addCardButton.setDisable(false); // Birden fazla eklemeye izin veriyoruz
+            addCardButton.setDisable(false); // Allow adding multiple cards
         }
     }
 
-    // --------------- Profil Güncelleme ----------------
+    // --------------- Profile Update ----------------
+    /**
+     * Updates user profile (email and password):
+     * - Checks that all fields are filled
+     * - Verifies old password matches
+     * - Updates password, then updates email
+     * - Displays success or failure message in messageLabel
+     */
     @FXML
     private void handleUpdateAction(ActionEvent event) {
         int currentUserId = Session.getCurrentUserId();
         if (currentUserId <= 0) {
-            messageLabel.setText("Kullanıcı bilgisi alınamadı.");
+            messageLabel.setText("Unable to retrieve user information.");
             return;
         }
 
@@ -95,36 +102,41 @@ public class ProfileController {
         String confirm = confirmPasswordField.getText().trim();
 
         if (email.isEmpty() || oldPwd.isEmpty() || newPwd.isEmpty() || confirm.isEmpty()) {
-            messageLabel.setText("Lütfen tüm alanları doldurun.");
+            messageLabel.setText("Please fill in all fields.");
             return;
         }
         if (!newPwd.equals(confirm)) {
-            messageLabel.setText("Yeni şifreler eşleşmiyor.");
+            messageLabel.setText("New passwords do not match.");
             return;
         }
 
         UserDAO userDao = new UserDAO();
         boolean pwdUpdated = userDao.updatePassword(currentUserId, oldPwd, newPwd);
         if (!pwdUpdated) {
-            messageLabel.setText("Eski şifre yanlış veya güncelleme başarısız.");
+            messageLabel.setText("Old password is incorrect or update failed.");
             return;
         }
 
         boolean emailUpdated = userDao.updateEmail(currentUserId, email);
         if (emailUpdated) {
             messageLabel.setStyle("-fx-text-fill: green;");
-            messageLabel.setText("Profil bilgileri başarıyla güncellendi.");
+            messageLabel.setText("Profile information updated successfully.");
         } else {
-            messageLabel.setText("E-posta güncellenirken hata oluştu.");
+            messageLabel.setText("An error occurred while updating email.");
         }
     }
 
-    // ------------- Kartı Güncelleme ------------------
+    // ------------- Update Card ------------------
+    /**
+     * Updates an existing credit card.
+     * - Validates that month and year are numeric
+     * - Updates the most recently added card for the user
+     */
     @FXML
     private void handleCardUpdateAction(ActionEvent event) {
         int currentUserId = Session.getCurrentUserId();
         if (currentUserId <= 0) {
-            cardMessageLabel.setText("Kullanıcı bilgisi alınamadı.");
+            cardMessageLabel.setText("Unable to retrieve user information.");
             return;
         }
 
@@ -134,7 +146,7 @@ public class ProfileController {
         String cvv      = cvvField.getText().trim();
 
         if (number.isEmpty() || monthStr.isEmpty() || yearStr.isEmpty() || cvv.isEmpty()) {
-            cardMessageLabel.setText("Lütfen tüm kart alanlarını doldurun.");
+            cardMessageLabel.setText("Please fill in all card fields.");
             return;
         }
 
@@ -143,28 +155,33 @@ public class ProfileController {
             month = Integer.parseInt(monthStr);
             year  = Integer.parseInt(yearStr);
         } catch (NumberFormatException e) {
-            cardMessageLabel.setText("Ay ve yıl yalnızca rakam olmalı.");
+            cardMessageLabel.setText("Month and year must be numeric.");
             return;
         }
 
-        // Burada kullanıcıya ait ilk kartı güncelliyoruz; eğer birden fazla ise, onları da listeleme ekranı eklemeniz gerekir
+        // Update the most recently added card for this user
         CreditCard updated = new CreditCard(currentUserId, number, month, year, cvv);
         boolean success = new CreditCardDAO().updateCard(updated);
 
         if (success) {
             cardMessageLabel.setStyle("-fx-text-fill: green;");
-            cardMessageLabel.setText("Kart başarıyla güncellendi.");
+            cardMessageLabel.setText("Card updated successfully.");
         } else {
-            cardMessageLabel.setText("Kart güncelleme sırasında hata oluştu.");
+            cardMessageLabel.setText("An error occurred while updating the card.");
         }
     }
 
-    // --------------- Kartı Ekleme -------------------
+    // --------------- Add Card -------------------
+    /**
+     * Adds a new credit card.
+     * - Validates that month and year are numeric
+     * - Inserts the new card using DAO
+     */
     @FXML
     private void handleCardAddAction(ActionEvent event) {
         int currentUserId = Session.getCurrentUserId();
         if (currentUserId <= 0) {
-            cardMessageLabel.setText("Kullanıcı bilgisi alınamadı.");
+            cardMessageLabel.setText("Unable to retrieve user information.");
             return;
         }
 
@@ -174,7 +191,7 @@ public class ProfileController {
         String cvv      = cvvField.getText().trim();
 
         if (number.isEmpty() || monthStr.isEmpty() || yearStr.isEmpty() || cvv.isEmpty()) {
-            cardMessageLabel.setText("Lütfen tüm kart alanlarını doldurun.");
+            cardMessageLabel.setText("Please fill in all card fields.");
             return;
         }
 
@@ -183,7 +200,7 @@ public class ProfileController {
             month = Integer.parseInt(monthStr);
             year  = Integer.parseInt(yearStr);
         } catch (NumberFormatException e) {
-            cardMessageLabel.setText("Ay ve yıl yalnızca rakam olmalı.");
+            cardMessageLabel.setText("Month and year must be numeric.");
             return;
         }
 
@@ -192,13 +209,17 @@ public class ProfileController {
 
         if (success) {
             cardMessageLabel.setStyle("-fx-text-fill: green;");
-            cardMessageLabel.setText("Yeni kart başarıyla eklendi.");
+            cardMessageLabel.setText("New card added successfully.");
         } else {
-            cardMessageLabel.setText("Kart ekleme sırasında hata oluştu.");
+            cardMessageLabel.setText("An error occurred while adding the card.");
         }
     }
 
-    // ----------------- Geri Dön ----------------------
+    // ----------------- Back ----------------------
+    /**
+     * Called when the “Back” button is pressed.
+     * Loads MainMenu.fxml.
+     */
     @FXML
     private void handleBackAction(ActionEvent event) {
         try {

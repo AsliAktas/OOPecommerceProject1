@@ -7,11 +7,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO class for the products table:
+ * - getAllProducts: fetches all products
+ * - getProductById: fetches a single product by ID
+ * - insertProduct: inserts a new product (and sets its generated ID)
+ * - updateProduct: updates an existing product
+ * - deleteProductById: deletes a product by ID
+ */
 public class ProductDAO {
 
     /**
-     * Verilen kullanıcıya ait tüm ürünleri getirir.
-     * @return products listesi
+     * Returns a list of all products from the database.
+     * @return List<Product> (empty if no products)
      */
     public static List<Product> getAllProducts() {
         List<Product> products = new ArrayList<>();
@@ -40,9 +48,9 @@ public class ProductDAO {
     }
 
     /**
-     * Belirtilen ID'ye sahip ürünü döner.
-     * @param productId ürün ID'si
-     * @return Product veya null
+     * Returns the product with the specified ID.
+     * @param productId The product’s ID
+     * @return A Product object or null if not found
      */
     public static Product getProductById(int productId) {
         String sql = "SELECT id, name, description, price, stock FROM products WHERE id = ?";
@@ -71,9 +79,10 @@ public class ProductDAO {
     }
 
     /**
-     * Yeni bir ürün ekler. Başarılıysa true döner ve product.id'i güncellenir.
-     * @param product eklenecek Product nesnesi
-     * @return ekleme başarılıysa true, aksi halde false
+     * Inserts a new product into the database.
+     * Sets the generated ID back into the Product object.
+     * @param product Product object (name, description, price, stock must be set)
+     * @return true if insertion succeeds, false otherwise
      */
     public static boolean insertProduct(Product product) {
         String sql = "INSERT INTO products (name, description, price, stock) VALUES (?, ?, ?, ?)";
@@ -88,6 +97,7 @@ public class ProductDAO {
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) return false;
 
+            // Assign generated ID back to the object
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     product.setId(generatedKeys.getInt(1));
@@ -102,9 +112,9 @@ public class ProductDAO {
     }
 
     /**
-     * Varolan bir ürünü günceller.
-     * @param product güncellenecek Product nesnesi (id dolu olmalı)
-     * @return güncelleme başarılıysa true, aksi halde false
+     * Updates an existing product.
+     * @param product Product object (id, name, description, price, stock must be set)
+     * @return true if update succeeds, false otherwise
      */
     public static boolean updateProduct(Product product) {
         String sql = "UPDATE products SET name = ?, description = ?, price = ?, stock = ? WHERE id = ?";
@@ -126,9 +136,9 @@ public class ProductDAO {
     }
 
     /**
-     * Belirtilen ID'ye sahip ürünü siler.
-     * @param productId silinecek ürün ID'si
-     * @return silme başarılıysa true, aksi halde false
+     * Deletes the product with the specified ID.
+     * @param productId The product’s ID to delete
+     * @return true if deletion succeeds, false otherwise
      */
     public static boolean deleteProductById(int productId) {
         String sql = "DELETE FROM products WHERE id = ?";

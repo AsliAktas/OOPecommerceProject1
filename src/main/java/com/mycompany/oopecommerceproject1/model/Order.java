@@ -2,6 +2,18 @@ package com.mycompany.oopecommerceproject1.model;
 
 import java.sql.Timestamp;
 
+/**
+ * Model class for an Order.
+ * - id: primary key from the orders table
+ * - userId: ID of the user who placed the order
+ * - cardId: ID of the credit card used
+ * - totalAmount: total amount of the order
+ * - orderDate: timestamp when the order was placed
+ *
+ * Two constructors:
+ * 1) Full constructor: used when reading from the DB (id and orderDate provided)
+ * 2) Constructor for new orders: id and orderDate are assigned by the DB
+ */
 public class Order {
     private int id;
     private int userId;
@@ -9,7 +21,7 @@ public class Order {
     private double totalAmount;
     private Timestamp orderDate;
 
-    // Tam yapıcı (DB’den okuyup kaydederken)
+    /** Full constructor (used when reading from DB) */
     public Order(int id, int userId, int cardId, double totalAmount, Timestamp orderDate) {
         this.id = id;
         this.userId = userId;
@@ -18,7 +30,7 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    // Yeni sipariş oluşturmak için yapıcı (id, orderDate DB’de atanacak)
+    /** Constructor for creating a new order (id and orderDate assigned by DB) */
     public Order(int userId, int cardId, double totalAmount) {
         this.userId = userId;
         this.cardId = cardId;
@@ -26,7 +38,6 @@ public class Order {
     }
 
     // ───────── Getters & Setters ─────────
-
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -42,4 +53,3 @@ public class Order {
     public Timestamp getOrderDate() { return orderDate; }
     public void setOrderDate(Timestamp orderDate) { this.orderDate = orderDate; }
 }
-

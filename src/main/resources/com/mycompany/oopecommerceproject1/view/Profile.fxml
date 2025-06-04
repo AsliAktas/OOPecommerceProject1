@@ -15,51 +15,53 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label text="Profil Bilgileri" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <!-- Profile Information title -->
+    <Label text="Profile Information" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
+    <!-- GridPane for profile update fields -->
     <GridPane hgap="10" vgap="10">
-        <Label text="Kullanıcı Adı:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label text="Username:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1" editable="false"/>
 
-        <Label text="E-Posta:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label text="Email:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="emailField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-        <Label text="Eski Şifre:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Label text="Old Password:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <PasswordField fx:id="oldPasswordField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-        <Label text="Yeni Şifre:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Label text="New Password:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
         <PasswordField fx:id="newPasswordField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-        <Label text="Yeni Şifre Tekrar:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Label text="Confirm Password:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
         <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-        <Button text="Profil Güncelle" fx:id="updateButton" GridPane.rowIndex="5" GridPane.columnIndex="1"
+        <Button text="Update Profile" fx:id="updateButton" GridPane.rowIndex="5" GridPane.columnIndex="1"
                 onAction="#handleUpdateAction"/>
     </GridPane>
 
     <Label fx:id="messageLabel" text="" style="-fx-text-fill: red;"/>
 
-    <Label text="Kredi Kartı Bilgileri" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-margin-top:20px;"/>
+    <!-- Credit Card Information title -->
+    <Label text="Credit Card Information" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
     <GridPane hgap="10" vgap="10">
-        <Label text="Kart Numarası:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label text="Card Number:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="cardNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-        <Label text="Son Kul. Ay:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label text="Expiry Month:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="expiryMonthField" promptText="MM" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="60"/>
 
-        <Label text="Son Kul. Yıl:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Label text="Expiry Year:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <TextField fx:id="expiryYearField" promptText="YYYY" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="80"/>
 
         <Label text="CVV:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
         <PasswordField fx:id="cvvField" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="60"/>
 
-        <!-- HBox içinde iki buton yan yana -->
         <HBox spacing="10" GridPane.rowIndex="4" GridPane.columnIndex="1">
-            <Button text="Kartı Güncelle"
+            <Button text="Update Card"
                     fx:id="updateCardButton"
                     onAction="#handleCardUpdateAction"/>
-            <Button text="Kart Ekle"
+            <Button text="Add Card"
                     fx:id="addCardButton"
                     onAction="#handleCardAddAction"/>
         </HBox>
@@ -67,5 +69,5 @@
 
     <Label fx:id="cardMessageLabel" text="" style="-fx-text-fill: green;"/>
 
-    <Button text="Geri Dön" fx:id="backButton" onAction="#handleBackAction" style="-fx-margin-top:20px;"/>
+    <Button text="Back" fx:id="backButton" onAction="#handleBackAction"/>
 </VBox>

@@ -13,19 +13,24 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
+    <!-- TableView to list favorite products -->
     <TableView fx:id="favoritesTable" prefHeight="350" prefWidth="580">
         <columns>
-            <TableColumn fx:id="favIdColumn"    text="Ürün ID"   prefWidth="80"/>
-            <TableColumn fx:id="favNameColumn"  text="Ürün Adı"  prefWidth="200"/>
-            <TableColumn fx:id="favPriceColumn" text="Fiyat (₺)" prefWidth="120"/>
+            <!-- Product ID column -->
+            <TableColumn fx:id="favIdColumn"    text="Product ID"    prefWidth="80"/>
+            <!-- Product name column -->
+            <TableColumn fx:id="favNameColumn"  text="Product Name"  prefWidth="200"/>
+            <!-- Price column -->
+            <TableColumn fx:id="favPriceColumn" text="Price (₺)"     prefWidth="120"/>
         </columns>
     </TableView>
 
+    <!-- Button row: Remove Favorite and Back -->
     <HBox spacing="10">
-        <Button text="Favoriden Kaldır"
+        <Button text="Remove Favorite"
                 fx:id="removeFavButton"
                 onAction="#handleRemoveFavoriteAction"/>
-        <Button text="Geri Dön"
+        <Button text="Back"
                 fx:id="backButton"
                 onAction="#handleBackAction"/>
     </HBox>

@@ -18,7 +18,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Kullanıcının sahip olduğu tüm kartları listeler.
+ * Controller for the “My Cards” screen:
+ * - Lists all credit cards the user has saved
+ * - If no cards are found, displays a message
+ * - “Back” button returns to the main menu
  */
 public class MyCardsController {
 
@@ -28,22 +31,29 @@ public class MyCardsController {
     @FXML
     public void initialize() {
         int currentUserId = Session.getCurrentUserId();
+        // If user is not logged in, show a message
         if (currentUserId <= 0) {
-            messageLabel.setText("Önce giriş yapmalısınız.");
+            messageLabel.setText("Please log in first.");
             return;
         }
 
         CreditCardDAO cardDao = new CreditCardDAO();
-        List<CreditCard> kartlar = cardDao.getAllCardsByUserId(currentUserId);
+        List<CreditCard> cards = cardDao.getAllCardsByUserId(currentUserId);
 
-        if (kartlar.isEmpty()) {
-            messageLabel.setText("Henüz kayıtlı kartınız yok.");
+        // If the user has no saved cards, show a message
+        if (cards.isEmpty()) {
+            messageLabel.setText("You have no saved cards yet.");
         } else {
-            ObservableList<CreditCard> obs = FXCollections.observableArrayList(kartlar);
+            // Convert the list to ObservableList and set it on the ListView
+            ObservableList<CreditCard> obs = FXCollections.observableArrayList(cards);
             cardsListView.setItems(obs);
         }
     }
 
+    /**
+     * Called when the “Back” button is pressed.
+     * Returns to MainMenu.fxml.
+     */
     @FXML
     private void handleBackAction(ActionEvent event) {
         try {
